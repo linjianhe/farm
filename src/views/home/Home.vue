@@ -5,8 +5,9 @@
     </nav-bar>
     <Swiper/>
     <recommends/>
-    <img style="width: 100%;height: 150px;" src="@/assets/img/testImg/hot.jpg">
-    <tabControl :class="{fixed: fixed}" class="tab-control" :title="['流行', '精款', '精选']"/>
+    <img style="width: 100%;height: 350px;" src="@/assets/img/testImg/hot.jpg">
+    <div style="height: 40px;" v-show="isFixed"></div>
+    <tabControl :class="{fixed: isFixed}" class="tab-control" :title="['流行', '精款', '精选']" ref="tabControl"/>
     <back-top v-if="show" @click.native="backTop"/>
     <goods :goods="goods"/>
   </div>
@@ -27,7 +28,7 @@
       return {
         bgc: '#ff8198',
         fontColor: '#fff',
-        fixed: false,
+        isFixed: false,
         goods: [
           {img: 'http://photocdn.sohu.com/20120314/Img337695482.jpg', name: '汽车', price: 24232},
           {img: 'http://file16.zk71.com/File/CorpProductImages/2017/10/31/shipin_3028_0_20171031155950.jpg', name: '汽车', price: 24232},
@@ -72,7 +73,8 @@
           {img: 'http://photocdn.sohu.com/20120314/Img337695482.jpg', name: '汽车', price: 24232},
           {img: 'http://photocdn.sohu.com/20120314/Img337695482.jpg', name: '汽车', price: 24232}
         ],
-        show: false
+        show: false,
+        tabOffsetTop: 0
       }
     },
     components: {
@@ -85,21 +87,23 @@
     },
     created() {
       this.$store.dispatch('home/LogOut').then(res => {
-        console.log(res)
+        // console.log(res)
       })
     },
     mounted() {
       window.addEventListener('scroll',this.handleScroll)
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop
     },
     destroyed () {
-      window.removeEventListener('scroll', this.handleScroll)
+      window.removeEventListener('scroll', this.handleScroll())
     },
     methods: {
       handleScroll() {
         let scrollTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop // 滚动条偏移量
-        let offsetTop = document.querySelector('.tab-control').offsetTop;  // 要滚动到顶部吸附的元素的偏移量
-        this.Fixed = (scrollTop > offsetTop-44 );  // 如果滚动到顶部了，this.isFixed就为true
+        // let offsetTop = document.querySelector('.tab-control').offsetTop;  // 要滚动到顶部吸附的元素的偏移量
+        this.isFixed = (scrollTop > this.tabOffsetTop-44 );  // 如果滚动到顶部了，this.isFixed就为true
         this.show = (scrollTop >= 1000)
+        console.log(this.isFixed, this.tabOffsetTop, scrollTop)
       },
       backTop() {
         console.log('回到顶部')
@@ -121,15 +125,16 @@
     margin-top: 44px;
     margin-bottom: 49px;
   }
-  /*.fixed{*/
-  /*  position: fixed;*/
-  /*  top: 44px;*/
-  /*  z-index: 20;*/
-  /*}*/
-  .tab-control{
-    position: sticky;
+  .fixed{
+    position: fixed;
     top: 44px;
-    z-index: 1;
+    left: 0;
+    right: 0;
+  }
+  .tab-control{
+    /*position: sticky;*/
+    /*top: 44px;*/
+    /*z-index: 1;*/
     background-color: #fff;
   }
 </style>

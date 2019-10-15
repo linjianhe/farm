@@ -1,5 +1,5 @@
 <template>
-  <el-carousel :interval="3000" arrow="always" height="170px">
+  <el-carousel :interval="3000" arrow="always" height="200px">
     <el-carousel-item v-for="item in 4" :key="item">
       <img src="@/assets/img/testImg/test.jpg" alt=""/>
     </el-carousel-item>
@@ -15,6 +15,6 @@
 <style scoped>
   .el-carousel__item img {
     width: 100%;
-    height: 170px;
+    height: 200px;
   }
 </style>

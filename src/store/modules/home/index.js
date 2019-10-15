@@ -26,7 +26,7 @@ const mutations = {
     state.username = null
     // cookie.delete('token' + JSON.parse(sessionStorage.getItem('userInfo')).userId);
     sessionStorage.clear()
-    console.log('退出')
+    // console.log('退出')
   }
 }
 
