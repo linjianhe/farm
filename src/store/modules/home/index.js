@@ -35,9 +35,21 @@ const actions = {
   LogOut({ commit }) {
     commit('LOGOUT')
   },
-  Login1({ commit }, data) {
+  GetCars({ commit }, data) {
     return new Promise((resolve, reject) => {
-      resolve('sss')
+      interceptor({
+        url: '/api/car/',
+        params: {
+          type: 'brand',
+          from: 0,
+          pagesize: 300
+        },
+        method: 'get'
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
     })
   },
   Login({ commit }, data) {
@@ -47,115 +59,11 @@ const actions = {
         method: 'post',
         data: data
       }).then(res => {
-        commit('SET_TOKEN', res.data.token);
-        sessionStorage.setItem('userInfo', JSON.stringify(res.data.user));
+        commit('SET_TOKEN', res.data.token)
+        sessionStorage.setItem('userInfo', JSON.stringify(res.data.user))
         let id = res.data.user.userId
         // cookie.set('token' + id, res.data.token);
         this.dispatch('webSocket/InitWebSocket', id)
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  CheckName({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'login/checkName',
-        method: 'post',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  CheckEmail({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'login/registerCheckEmail',
-        method: 'post',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  CheckPhone({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'login/registerCheckPhone',
-        method: 'post',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  CheckName1({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'login/registerCheckName',
-        method: 'post',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  Register({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'login/register',
-        method: 'post',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  GetCheckCode({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        method: 'post',
-        url: 'mail/getCheckCode',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  CheckMessage({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'mail/checkMessage',
-        method: 'post',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  SetPass({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'mail/setPass',
-        method: 'post',
-        data: data
-      }).then(res => {
         resolve(res)
       }).catch(err => {
         reject(err)

@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Promise } from 'q'
 
 const service = axios.create({
-  baseURL: process.env.BASE_URL,
+  // baseURL: process.env.BASE_URL,
   timeout: 150000
 })
 

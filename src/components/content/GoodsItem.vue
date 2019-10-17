@@ -1,8 +1,8 @@
 <template>
   <div class="goods-item" @click="itemDetail">
-    <img :src="goodsItem.img" alt=""/>
+    <img :src="goodsItem.img || 'http://car3.autoimg.cn/cardfs/series/g26/M05/AA/A1/autohomecar__wKgHEVs8raOAIlAJAAAsu8M_vL0825.png'" alt=""/>
     <p>{{goodsItem.name}}</p>
-    <p>￥:{{goodsItem.price}}</p>
+<!--    <p>￥:{{goodsItem.price}}</p>-->
   </div>
 </template>
 
@@ -19,7 +19,10 @@
     },
     methods: {
       itemDetail() {
-        this.$router.push('/detail/' + this.goodsItem.id)
+        // this.$router.push('/detail/' + this.goodsItem.id)//商品详情
+        this.$router.push({
+          path: `/brandsDetail/${this.goodsItem.id}/${this.goodsItem.name}`
+        }) // 品牌详情
       }
     }
   }
@@ -29,6 +32,8 @@
   .goods-item{
     width: 48%;
     text-align: center;
+    background-color: #fff;
+    margin: 5px 0;
   }
   .goods-item img{
     width: 100%;
