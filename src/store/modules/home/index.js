@@ -5,24 +5,18 @@ import interceptor from '@/network/request'
 Vue.use(Vuex)
 
 const state = {
-  token: null,
   username: null
 }
 
 const getters = {
-  token: state => state.token,
   username: state => state.username
 }
 
 const mutations = {
-  SET_TOKEN(state, data) {
-    state.token = data
-  },
   SET_USERNAME(state, data) {
     state.username = data
   },
   LOGOUT(state) {
-    state.token = null
     state.username = null
     // cookie.delete('token' + JSON.parse(sessionStorage.getItem('userInfo')).userId);
     sessionStorage.clear()

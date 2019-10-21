@@ -24,9 +24,9 @@ const actions = {
       interceptor({
         url: '/api/car/',
         params: {
-          type: 'series',
+          type: 'info',
           from: 0,
-          pagesize: 300,
+          pagesize: 3000,
           brand_id: id
         },
         method: 'get'

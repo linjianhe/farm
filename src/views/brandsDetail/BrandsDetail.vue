@@ -1,13 +1,16 @@
 <template>
   <div id="brandsDetail">
-    <h1>{{brandName}}</h1>
-    <ul class="brandCar">
-      <li v-for="item in brandCar">{{item.name}}</li>
-    </ul>
+    <BrandsDetailNav :brandName="brandName"></BrandsDetailNav>
+    <div>
+      <ul class="brandCar">
+        <li v-for="item in brandCar" :key="item" @click="detail(item)"><span>></span>{{item.name}}</li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script>
+  import BrandsDetailNav from '@/components/content/BrandsDetailNav'
   export default {
     name: 'brandsDetail',
     data() {
@@ -17,8 +20,18 @@
         brandName: null
       }
     },
+    components: {
+      BrandsDetailNav
+    },
     methods: {
-
+      detail(item) {
+        this.$router.push({
+          path: '/carDetail',
+          params: {
+            id: item.id
+          }
+        })
+      }
     },
     created() {
       this.id = this.$route.params.id
@@ -32,11 +45,24 @@
 </script>
 
 <style scoped>
-  #brandsDetail h1{
-    text-align: center;
-    background-color: #ddd;
+  #brandsDetail{
+    position: relative;
+    z-index: 999;
+    background-color: #fff;
+    height: 100vh;
+    overflow: scroll;
+  }
+  .brandCar{
+    margin-top: 50px;
   }
   .brandCar li{
-    margin: 0 0 15px;
+    margin: 10px 0 0;
+    list-style-type: none;
+    background-color: #bbb;
+    height: 30px;
+    line-height: 30px;
+  }
+  .brandCar li span{
+    color: #ccc;
   }
 </style>
