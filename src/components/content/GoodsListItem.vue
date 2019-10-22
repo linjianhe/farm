@@ -34,7 +34,7 @@
     },
     computed: {
       imgUrl() {
-        if(!this.check) {
+        if(!this.goods.check) {
           return require('../../assets/img/choose.svg')
         } else{
           return require('../../assets/img/choosed.svg')
@@ -43,7 +43,7 @@
     },
     methods: {
       imgClick() {
-        this.check = !this.check
+        this.goods.check = !this.goods.check
       },
       numDown() {
         this.goods.num --

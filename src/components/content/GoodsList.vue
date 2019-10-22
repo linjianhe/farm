@@ -27,7 +27,7 @@
     width: 100%;
     margin-top: 44px;
     background-color: #EAEAEA;
-    height: calc(100vh - 44px - 49px);
+    height: calc(100vh - 44px - 49px - 40px);
     overflow: auto;
   }
 </style>
