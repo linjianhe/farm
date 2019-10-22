@@ -4,6 +4,7 @@
       <div slot="center">购物街</div>
     </nav-bar>
     <Swiper/>
+
     <recommends/>
     <img style="width: 100%;height: 350px;" src="@/assets/img/testImg/hot.jpg">
     <div style="height: 40px;" v-show="isFixed"></div>

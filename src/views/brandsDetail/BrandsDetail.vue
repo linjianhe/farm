@@ -3,7 +3,7 @@
     <BrandsDetailNav :brandName="brandName"></BrandsDetailNav>
     <div>
       <ul class="brandCar">
-        <li v-for="item in brandCar" :key="item" @click="detail(item)"><span>></span>{{item.name}}</li>
+        <li v-for="item in brandCar" @click="detail(item)"><span>></span>{{item.name}}</li>
       </ul>
     </div>
   </div>
