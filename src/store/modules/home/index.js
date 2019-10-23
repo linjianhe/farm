@@ -46,6 +46,23 @@ const actions = {
       })
     })
   },
+  GetCarsCopy({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/api/car/',
+        params: {
+          type: 'brand',
+          from: 0,
+          pagesize: 10*data
+        },
+        method: 'get'
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
   Login({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({

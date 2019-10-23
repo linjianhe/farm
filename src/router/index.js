@@ -7,6 +7,7 @@ const Profile = () => import('../views/profile/Profile')
 const Category = () => import('../views/category/Category')
 const Detail = () => import('../views/detail/Detail')
 const BrandsDetail = () => import('../views/brandsDetail/BrandsDetail')
+const Order = () => import('../views/order/Order')
 
 Vue.use(Router)
 
@@ -41,6 +42,10 @@ export default new Router({
     {
       path: '/brandsDetail/:id/:name',
       component: BrandsDetail
+    },
+    {
+      path: '/order',
+      component: Order
     }
   ]
 })

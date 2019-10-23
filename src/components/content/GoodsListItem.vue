@@ -7,7 +7,7 @@
     <div class="item-info">
       <div class="item-title">{{goods.name}}</div>
       <div class="info-bottom">
-        <div class="item-price">￥{{goods.price}}</div>
+        <div class="item-price">￥{{goods.price | price}}</div>
         <input type="button" value="-" class="num-down" :disabled="goods.num<1" @click="numDown"/>
         <div class="item-num">{{goods.num}}</div>
         <input type="button" value="+" class="num-up" :disabled="goods.num>=5" @click="numUp"/>
@@ -39,6 +39,11 @@
         } else{
           return require('../../assets/img/choosed.svg')
         }
+      }
+    },
+    filters: {
+      price(price) {
+        return price.toFixed(2)
       }
     },
     methods: {
@@ -74,9 +79,10 @@
   }
   .item-info{
     margin: 20px 0;
+    flex: 1;
   }
   .item-title{
-    width: 200px;
+    width: 150px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -88,9 +94,9 @@
   .item-price{
     color: red;
     font-size: 18px;
+    margin-right: auto;
   }
   .num-down{
-    margin-left: 70px;
   }
   .item-num{
     width: 25px;

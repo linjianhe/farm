@@ -1,8 +1,8 @@
 <template>
   <div class="cartBottomBar">
-    <img :src="imgUrl" @click=""/>
+    <img :src="imgUrl" @click="checkAll"/>
     <div>全选</div>
-    <div class="totalPrice">合计:￥{{2000}}</div>
+    <div class="totalPrice">合计:￥{{totalPrice | total}}</div>
     <div class="goPay">去结算</div>
   </div>
 </template>
@@ -10,13 +10,41 @@
 <script>
   export default {
     name: 'CartBottomBar',
+    props: {
+      totalPrice: {
+        type: Number,
+        default() {
+          return 0
+        }
+      },
+      flag: {
+        type: Boolean,
+        default() {
+          return false
+        }
+      }
+    },
+    data() {
+      return {
+      }
+    },
     computed: {
       imgUrl() {
-        if(1) {
+        if(!this.flag) {
           return require('../../assets/img/choose.svg')
         } else{
           return require('../../assets/img/choosed.svg')
         }
+      }
+    },
+    filters: {
+      total(price) {
+        return price.toFixed(2)
+      }
+    },
+    methods: {
+      checkAll() {
+        this.$emit('checkAll')
       }
     }
   }
@@ -49,5 +77,6 @@
     width: 80px;
     line-height: 40px;
     text-align: center;
+    color: #fff;
   }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="itemDetail">
-    <img :src="goodsItem.img || 'http://car3.autoimg.cn/cardfs/series/g26/M05/AA/A1/autohomecar__wKgHEVs8raOAIlAJAAAsu8M_vL0825.png'" alt=""/>
+    <img v-lazy="goodsItem.img || 'http://car3.autoimg.cn/cardfs/series/g26/M05/AA/A1/autohomecar__wKgHEVs8raOAIlAJAAAsu8M_vL0825.png'" alt=""/>
     <p>{{goodsItem.name}}</p>
 <!--    <p>￥:{{goodsItem.price}}</p>-->
   </div>
@@ -34,6 +34,7 @@
     text-align: center;
     background-color: #fff;
     margin: 5px 0;
+    border-radius: 10px;
   }
   .goods-item img{
     width: 100%;
