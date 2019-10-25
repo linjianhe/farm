@@ -3,7 +3,7 @@ import { Promise } from 'q'
 
 const service = axios.create({
   // baseURL: process.env.BASE_URL,
-  baseURL: 'http://localhost:3000',
+  // baseURL: 'http://localhost:3000',
   timeout: 150000
 })
 
