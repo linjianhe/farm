@@ -80,6 +80,19 @@ const actions = {
         reject(err)
       })
     })
+  },
+  Test({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/goods',
+        method: 'get',
+        data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 

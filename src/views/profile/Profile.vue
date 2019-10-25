@@ -30,6 +30,7 @@
 </template>
 
 <script>
+  import axios from 'axios'
 export default {
   name: 'profile',
   data() {
@@ -43,6 +44,14 @@ export default {
         path: '/order'
       })
     }
+  },
+  created() {
+    this.$store.dispatch('home/Test').then(res => {
+      console.log(res)
+    })
+    // axios.get('/goods').then(res => {
+    //   console.log('===--', res)
+    // })
   }
 }
 </script>
