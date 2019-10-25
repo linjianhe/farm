@@ -49,9 +49,6 @@ export default {
     this.$store.dispatch('home/Test').then(res => {
       console.log(res)
     })
-    // axios.get('/goods').then(res => {
-    //   console.log('===--', res)
-    // })
   }
 }
 </script>
