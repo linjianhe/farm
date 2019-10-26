@@ -1,34 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import interceptor from '@/network/request'
+import urlList from '@/network/UrlList'
 
+const shopUrl = urlList.shop
 Vue.use(Vuex)
 
 const state = {
-  username: null
 }
 
 const getters = {
-  username: state => state.username
 }
 
 const mutations = {
-  SET_USERNAME(state, data) {
-    state.username = data
-  },
-  LOGOUT(state) {
-    state.username = null
-    // cookie.delete('token' + JSON.parse(sessionStorage.getItem('userInfo')).userId);
-    sessionStorage.clear()
-    // console.log('退出')
-  }
 }
 
 const actions = {
-  // 登出
-  LogOut({ commit }) {
-    commit('LOGOUT')
-  },
   GetCars({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
@@ -81,10 +68,23 @@ const actions = {
       })
     })
   },
-  Test({ commit }, data) {
+  GetGoods({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: '/goods',
+        url: shopUrl + '/goods',
+        method: 'get',
+        data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  GetBanner({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: shopUrl + '/home/banner',
         method: 'get',
         data: data
       }).then(res => {

@@ -1,7 +1,7 @@
 <template>
   <div class="goods-item" @click="itemDetail">
-    <img v-lazy="goodsItem.img || 'http://car3.autoimg.cn/cardfs/series/g26/M05/AA/A1/autohomecar__wKgHEVs8raOAIlAJAAAsu8M_vL0825.png'" alt=""/>
-    <p>{{goodsItem.name}}</p>
+    <img v-lazy="goodsItem.productImg || 'http://car3.autoimg.cn/cardfs/series/g26/M05/AA/A1/autohomecar__wKgHEVs8raOAIlAJAAAsu8M_vL0825.png'" alt=""/>
+    <p>{{goodsItem.productName}}</p>
 <!--    <p>￥:{{goodsItem.price}}</p>-->
   </div>
 </template>

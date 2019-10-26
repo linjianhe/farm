@@ -46,9 +46,9 @@ export default {
     }
   },
   created() {
-    this.$store.dispatch('home/Test').then(res => {
-      console.log('----', res)
-    })
+    // this.$store.dispatch('home/Test').then(res => {
+    //   console.log(res)
+    // })
   }
 }
 </script>

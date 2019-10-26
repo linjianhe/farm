@@ -44,9 +44,9 @@
       Goods
     },
     created() {
-      this.$store.dispatch('home/GetCars').then(res => {
+      this.$store.dispatch('home/GetGoods').then(res => {
         console.log(res)
-        this.goods = res.data.info
+        this.goods = res.data
       })
     },
     mounted() {
