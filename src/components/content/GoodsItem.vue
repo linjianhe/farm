@@ -19,10 +19,10 @@
     },
     methods: {
       itemDetail() {
-        // this.$router.push('/detail/' + this.goodsItem.id)//商品详情
-        this.$router.push({
-          path: `/brandsDetail/${this.goodsItem.id}/${this.goodsItem.name}`
-        }) // 品牌详情
+        this.$router.push('/detail/' + this.goodsItem.productId)//商品详情
+        // this.$router.push({
+        //   path: `/brandsDetail/${this.goodsItem.id}/${this.goodsItem.name}`
+        // }) // 品牌详情
       }
     }
   }

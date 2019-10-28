@@ -13,9 +13,9 @@
         </div>
         <div style="display: flex">
           <img class="login-img" src="../../assets/img/pass.svg"/>
-          <input v-if="isShow" type="password" class="login-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="passCheck($event)"/>
-          <input v-else type="text" class="login-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="passCheck($event)"/>
-          <el-switch style=" margin-left: 30px;" v-model="value" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
+          <input v-if="isShow" type="password" class="login-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
+          <input v-else type="text" class="login-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
+          <el-switch style=" margin-left: 40px;" v-model="value" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
         </div>
       </div>
     </div>
@@ -50,7 +50,23 @@
           password: this.password
         }
         this.$store.dispatch('user/Login',data).then(res => {
-          console.log(res)
+          if(res.data.result.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '登陆成功',
+              type: 'success'
+            })
+            this.$store.state.userInfo = res.data.result.userInfo
+            this.goBack()
+          } else {
+            this.$message({
+              showClose: true,
+              message: '账号或密码错误',
+              type: 'error'
+            })
+          }
+        }).catch(error => {
+          console.log(error)
         })
       }, 500),
       goBack() {
@@ -64,7 +80,6 @@
       },
       userNameCheck(event) {
         this.userName = event.target.value.replace(/\s+/g,"");
-        console.log(this.userName)
       },
       passCheck(event) {
         this.password = event.target.value.replace(/\s+/g,"");
@@ -79,6 +94,13 @@
 </script>
 
 <style scoped>
+  .login{
+    position: relative;
+    z-index: 999;
+    background-color: #fff;
+    height: 100vh;
+    overflow: hidden;
+  }
   .login-nav{
     font-size: 22px;
   }
@@ -102,8 +124,8 @@
     height: 37px;
   }
   .login-img{
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    /*height: 20px;*/
     vertical-align: middle;
   }
   .login-input, .login-input1{
@@ -127,7 +149,7 @@
     margin-right: auto;
   }
   .login-btn{
-    width: 170px;
+    width: 250px;
     height: 40px;
     line-height: 40px;
     margin: 50px auto 0;

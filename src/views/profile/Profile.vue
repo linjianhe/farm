@@ -2,7 +2,7 @@
   <div class="profile">
     <div class="profile-img">
       <img src="@/assets/img/testImg/yaotou.jpg" alt=""/>
-      <span>林剑河</span>
+      <span>{{$store.state.userInfo || '未登录，请先登录'}}</span>
     </div>
     <div class="profile-menu">
       <div class="profile-menu-item" @click="goOrder">
@@ -25,6 +25,11 @@
         <span>我的消息</span>
         <p>></p>
       </div>
+      <div @click="login">
+        <img src="@/assets/img/message.svg"/>
+        <span>登录</span>
+        <p>></p>
+      </div>
     </div>
   </div>
 </template>
@@ -42,6 +47,11 @@ export default {
     goOrder() {
       this.$router.push({
         path: '/order'
+      })
+    },
+    login() {
+      this.$router.push({
+        path: '/login'
       })
     }
   },
