@@ -4,6 +4,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors')
+const session = require('express-session')
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -25,7 +26,17 @@ app.use(cors({
   origin:['http://localhost:8080'],
   methods:['GET','POST'],
   alloweHeaders:['Content-Type', 'Authorization']
-}));
+}))
+app.use(session({
+    secret: 'ljh',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000*60*30
+    },
+    rolling:true
+  })
+)
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

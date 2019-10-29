@@ -45,27 +45,33 @@
     },
     methods: {
       login: utils.debounce(function() {
+        if(this.userName === '' || this.userName === undefined || this.userName === null || this.password === '' || this.password === undefined || this.password === null){
+          this.$message({
+            message: '账号和密码不能为空',
+            type: 'warning'
+          })
+          return false
+        }
         let data = {
           userName: this.userName,
           password: this.password
         }
         this.$store.dispatch('user/Login',data).then(res => {
-          if(res.data.result.code === 200) {
+          if(res.code === 200) {
             this.$message({
-              showClose: true,
               message: '登陆成功',
               type: 'success'
             })
-            this.$store.state.userInfo = res.data.result.userInfo
+            this.$store.state.userInfo = res.userInfo
             this.goBack()
           } else {
             this.$message({
-              showClose: true,
               message: '账号或密码错误',
               type: 'error'
             })
           }
         }).catch(error => {
+          alert('网络发生错误')
           console.log(error)
         })
       }, 500),

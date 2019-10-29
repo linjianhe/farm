@@ -8,17 +8,17 @@
       <h2>欢迎新用户注册~</h2>
       <div style="margin-bottom: 10px">
         <img class="forgetPass-img" src="../../assets/img/email.svg"/>
-        <input type="text" class="forgetPass-input" v-model="email" placeholder="请输入邮箱" onkeyup="this.value=this.value.replace(/\s+/g,'')" @input="userNameCheck($event)"/>
+        <input type="text" class="forgetPass-input" v-model="email" placeholder="请输入邮箱" @input="userNameCheck($event)" @blur="emailCheck"/>
       </div>
       <div style="display: flex;margin-bottom: 10px;">
         <img class="forgetPass-img" src="../../assets/img/pass.svg"/>
-        <input type="text" class="forgetPass-input1" v-model="checkCode" placeholder="请输入验证码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="codeCheck($event)"/>
-        <div class="sendEmail" style="margin-left: 30px;" @click="sendEmail">发送邮件</div>
+        <input type="text" class="forgetPass-input1" v-model="checkCode" placeholder="请输入验证码" @input="codeCheck($event)"/>
+        <div class="sendEmail" :class="{disabled: disabled}" style="margin-left: 20px; height: 25px;" @click="sendEmail">{{btn}}</div>
       </div>
       <div style="display: flex">
         <img class="forgetPass-img" src="../../assets/img/pass.svg"/>
-        <input v-if="isShow" type="password" class="forgetPass-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="passCheck($event)"/>
-        <input v-else type="text" class="forgetPass-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="passCheck($event)"/>
+        <input v-if="isShow" type="password" class="forgetPass-input1" v-model="password" placeholder="请输入密码" @input="passCheck($event)"/>
+        <input v-else type="text" class="forgetPass-input1" v-model="password" placeholder="请输入密码" @input="passCheck($event)"/>
         <el-switch style=" margin-left: 40px;" v-model="value" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
       </div>
     </div>
@@ -43,7 +43,10 @@
         checkCode: '',
         password: '',
         value: false,
-        isShow: true
+        isShow: true,
+        btn: '发送邮件',
+        time: 60,
+        disabled: false
       }
     },
     methods: {
@@ -54,42 +57,82 @@
         this.isShow = !this.isShow
       },
       userNameCheck(event) {
-        this.email = event.target.value.replace(/\s+/g,"");
+        this.email = event.target.value.replace(/\s+/g,'');
+      },
+      emailCheck() {
+        let result = (/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(this.email)
+        if(!result) {
+          this.$message({
+            type: 'warning',
+            message: '请输入正确的邮箱'
+          })
+        }
       },
       codeCheck(event) {
-        this.checkCode = event.target.value.replace(/\s+/g,"");
+        this.checkCode = event.target.value.replace(/[^\w]/g,'');
       },
       passCheck(event) {
-        this.password = event.target.value.replace(/\s+/g,"");
+        this.password = event.target.value.replace(/[^\w]/g,'');
       },
       register: utils.debounce(function () {
+        if(this.email === '' || this.email === undefined || this.email === null || this.password === '' || this.password === undefined || this.password === null || this.checkCode === '' || this.checkCode === undefined || this.checkCode === null){
+          this.$message({
+            message: '邮箱',
+            type: 'warning'
+          })
+          return false
+        }
         let userInfo = {
           email: this.email,
           checkCode: this.checkCode,
           password: this.password,
         }
         this.$store.dispatch('user/Register', userInfo).then(res => {
-          if(res.result.code === 202) {
+          if(res.code === 202) {
             this.$message({
               type: 'warning',
-              message: res.result.msg
+              message: res.msg
             })
           }
           if(res.result.code === 200) {
             this.$message({
               type: 'success',
-              message: res.result.msg
+              message: res.msg
             })
           }
+        }).catch(error => {
+          console.log(error)
         })
       }, 500),
       sendEmail() {
-        let data = {
-          email: 'linjianhe0902@163.com'
+        if(this.email === '' || this.email === undefined || this.email === null) {
+          this.$message({
+            type: 'warning',
+            message: '请先输入邮箱'
+          })
+          return false
         }
-        this.$store.dispatch('user/SendEmail', data).then(res => {
-          console.log('11')
-        })
+        let data = {
+          email: this.email
+        }
+        this.time = 60
+        this.timer()
+        this.disabled = true
+        console.log('----')
+        // this.$store.dispatch('user/SendEmail', data).then(res => {
+        //   console.log(res)
+        // })
+      },
+      timer() {
+        if (this.time > 0) {
+          this.time--;
+          this.btn = this.time + 's'
+          setTimeout(this.timer, 1000)
+        } else {
+          this.time = 60
+          this.disabled = false
+          this.btn = "发送邮件"
+        }
       }
     }
   }
@@ -137,10 +180,14 @@
     width: 210px;
   }
   .sendEmail{
-    line-height: 35px;
+    height: 25px;
+    line-height: 25px;
     text-align: center;
-    color: #b14545;
+    color: #fff;
     font-size: 12px;
+    background-color: #a0cfff;
+    border-radius: 10px;
+    align-self: center;
   }
   .agree{
     width: 285px;
@@ -159,5 +206,10 @@
     text-align: center;
     background-color: #000;
     color: #fff;
+  }
+  .disabled{
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: #ddd;
   }
 </style>

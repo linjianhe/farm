@@ -8,7 +8,7 @@
         <div v-for="(item,index) in category" class="category-item" :class="{check: currentIndex=== index}" @click="choose(index)">{{item}}</div>
       </div>
       <div class="category-right">
-        <goods :goods="goods"/>
+        <goods :goods="goods"></goods>
       </div>
     </div>
   </div>
