@@ -7,15 +7,15 @@
     <div class="login-content">
       <h1>来5斤商城</h1>
       <div class="login-form">
-        <div style="margin-bottom: 10px">
+        <div class="login-wrap">
           <img class="login-img" src="../../assets/img/user.svg"/>
           <input type="text" class="login-input" v-model="userName" placeholder="请输入用户名" onkeyup="this.value=this.value.replace(/\s+/g,'')" @input="userNameCheck($event)"/>
         </div>
-        <div style="display: flex">
+        <div class="login-wrap">
           <img class="login-img" src="../../assets/img/pass.svg"/>
-          <input v-if="isShow" type="password" class="login-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
-          <input v-else type="text" class="login-input1" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
-          <el-switch style=" margin-left: 40px;" v-model="value" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
+          <input v-if="isShow" type="password" class="login-input" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
+          <input v-else type="text" class="login-input" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
+          <el-switch v-model="value" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
         </div>
       </div>
     </div>
@@ -123,26 +123,27 @@
     width: 285px;
     margin: 0 auto;
   }
-  .login-form div{
+  .login-wrap{
     width: 285px;
-    margin: 0 auto;
+    margin: 0 auto 10px;
     border-bottom: 2px solid #ccc;
     height: 37px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
   .login-img{
     width: 20px;
     /*height: 20px;*/
     vertical-align: middle;
   }
-  .login-input, .login-input1{
-    width: 245px;
+  .login-input{
+    width: 255px;
     height: 35px;
     line-height: 35px;
     margin-left: 10px;
     border: none;
-  }
-  .login-input1{
-    width: 210px;
   }
   .login-other{
     margin: 10px auto 0;

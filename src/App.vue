@@ -18,4 +18,7 @@ export default {
 
 <style lang="scss">
 @import "./assets/css/base.css";
+  input{
+    outline: none;
+  }
 </style>
