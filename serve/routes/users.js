@@ -23,7 +23,7 @@ router.post('/login', function(req, res, next) {
   let password = req.body.password
   connection.query('SELECT * from user', function (err, rows, fields) {
     if (err) {
-      return res.send(err)
+      return res.json({code:201, msg: '获取失败'})
     }
     if(rows){ //获取用户列表，循环遍历判断当前用户是否存在
       let isTrue = 0

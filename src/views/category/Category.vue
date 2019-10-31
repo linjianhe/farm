@@ -35,14 +35,14 @@
         this.currentIndex = index
         if(index >= 1){
           this.$store.dispatch('home/GetCarsCopy',index).then(res => {
-            this.goods = res.data.info
+            this.goods = res.info
           })
         }
       }
     },
     created() {
       this.$store.dispatch('home/GetCars').then(res => {
-        this.goods = res.data.info
+        this.goods = res.info
       })
     },
   }
