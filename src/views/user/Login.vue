@@ -9,13 +9,17 @@
       <div class="login-form">
         <div class="login-wrap">
           <img class="login-img" src="../../assets/img/user.svg"/>
-          <input type="text" class="login-input" v-model="userName" placeholder="请输入用户名" onkeyup="this.value=this.value.replace(/\s+/g,'')" @input="userNameCheck($event)"/>
+          <input type="text" class="login-input" v-model="userName" placeholder="请输入用户名" @input="userNameCheck($event)"/>
         </div>
         <div class="login-wrap">
           <img class="login-img" src="../../assets/img/pass.svg"/>
-          <input v-if="isShow" type="password" class="login-input" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
-          <input v-else type="text" class="login-input" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @keyup.enter="login" @input="passCheck($event)"/>
-          <el-switch v-model="value" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
+          <input v-if="isShow" type="password" class="login-input" v-model="password" placeholder="请输入密码" @keyup.enter="login" @input="passCheck($event)"/>
+          <input v-else type="text" class="login-input" v-model="password" placeholder="请输入密码" @keyup.enter="login" @input="passCheck($event)"/>
+          <el-switch v-model="switchValue" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
+        </div>
+        <div class="login-wrap">
+          <input type="text" class="login-input" style="margin-left: 0;" v-model="code" placeholder="请输入验证码" @input="codeCheck($event)"/>
+          <img ref="captcha" @click.prevent="getCaptcha()" width="100px" height="35px" src="http://localhost:3000/users/captcha"/>
         </div>
       </div>
     </div>
@@ -30,6 +34,7 @@
 <script>
   import NavBar from '@/components/common/navBar/NavBar'
   import utils from '@/common/utils'
+  import axios from 'axios'
   export default {
     name: 'login',
     components: {
@@ -37,24 +42,40 @@
     },
     data() {
       return {
-        userName: '',
-        password: '',
-        value: false,
-        isShow: true
+        userName: '', //用户名
+        password: '', //密码
+        switchValue: false, //明文密码开关值
+        isShow: true, //是否显示明文密码
+        code: '' //验证码
       }
     },
     methods: {
       login: utils.debounce(function() {
-        if(this.userName === '' || this.userName === undefined || this.userName === null || this.password === '' || this.password === undefined || this.password === null){
+        if(!this.userName){
           this.$message({
-            message: '账号和密码不能为空',
+            message: '账号不能为空',
+            type: 'warning'
+          })
+          return false
+        }
+        if(!this.password) {
+          this.$message({
+            message: '密码不能为空',
+            type: 'warning'
+          })
+          return false
+        }
+        if(!this.code) {
+          this.$message({
+            message: '验证码不能为空',
             type: 'warning'
           })
           return false
         }
         let data = {
           userName: this.userName,
-          password: this.password
+          password: this.password,
+          code: this.code
         }
         this.$store.dispatch('user/Login',data).then(res => {
           if(res.code === 200) {
@@ -85,16 +106,23 @@
         this.$router.push('/forgetPass')
       },
       userNameCheck(event) {
-        this.userName = event.target.value.replace(/\s+/g,"");
+        this.userName = event.target.value.replace(/\s+/g, '');
       },
       passCheck(event) {
-        this.password = event.target.value.replace(/\s+/g,"");
+        this.password = event.target.value.replace(/[^\w]/g, '');
+      },
+      codeCheck(event) {
+        this.code = event.target.value.replace(/[^\w]/g, '');
       },
       changeShow() {
         this.isShow = !this.isShow
+      },
+      getCaptcha() {
+        this.$refs.captcha.src = 'http://localhost:3000/users/captcha?time=' + new Date()
       }
     },
     created () {
+
     }
   }
 </script>

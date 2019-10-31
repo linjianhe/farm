@@ -3,6 +3,7 @@ const router = express.Router()
 const connection = require('../public/javascripts/mysql')
 
 router.get('/banner',function (req,res,next) {
+  console.log(req.session.captcha)
   connection.query('SELECT * from banner', function (err, rows, fields) {
     if (err) {
       return res.send(err)

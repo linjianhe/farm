@@ -75,9 +75,23 @@
         this.password = event.target.value.replace(/[^\w]/g,'');
       },
       register: utils.debounce(function () {
-        if(this.email === '' || this.email === undefined || this.email === null || this.password === '' || this.password === undefined || this.password === null || this.checkCode === '' || this.checkCode === undefined || this.checkCode === null){
+        if(!this.email){
           this.$message({
-            message: '请确认所填信息不为空',
+            message: '邮箱不能为空',
+            type: 'warning'
+          })
+          return false
+        }
+        if(!this.checkCode) {
+          this.$message({
+            message: '验证码不能为空',
+            type: 'warning'
+          })
+          return false
+        }
+        if(!this.password) {
+          this.$message({
+            message: '密码不能为空',
             type: 'warning'
           })
           return false

@@ -13,6 +13,7 @@ const homeRouter = require('./routes/home')
 
 const app = express();
 
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -22,13 +23,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// 前端跨域设置
 app.use(cors({
   origin:['http://localhost:8080'],
   methods:['GET','POST'],
   alloweHeaders:['Content-Type', 'Authorization']
 }))
+
+//session设置
 app.use(session({
-    secret: 'ljh',
+    secret: '123456',
     resave: false,
     saveUninitialized: true,
     cookie: {

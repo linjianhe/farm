@@ -4,8 +4,9 @@ const connection = require('../public/javascripts/mysql')
 const nodemailer = require('nodemailer')
 const utils = require('../public/javascripts/utils')
 const session = require('express-session')
-// const bodyParse = require('body-parser')
+const svgCaptcha = require('svg-captcha')
 
+//邮箱相关配置
 let transporter = nodemailer.createTransport({
   host: 'smtp.qq.com',
   service: 'qq',
@@ -17,7 +18,7 @@ let transporter = nodemailer.createTransport({
 })
 
 router.post('/login', function(req, res, next) {
-  console.log(req.body)
+  console.log(req.session.captcha)
   let userName = req.body.userName
   let password = req.body.password
   connection.query('SELECT * from user', function (err, rows, fields) {
@@ -81,6 +82,20 @@ router.post('/sendEmail', function (req, res, next) {
     }
     return res.json({ code: 200, msg: '邮件发送成功' })
   })
+})
+
+//一次性图形验证码
+router.get('/captcha', function (req, res, next) {
+  let captcha = svgCaptcha.create({
+    color: true,
+    noise: 2,
+    ignoreChars: '0oli',
+    size: 4
+  })
+  req.session.captcha = captcha.text.toLocaleLowerCase()
+  console.log(req.session.captcha)
+  res.type('svg')
+  res.send(captcha.data)
 })
 
 module.exports = router;

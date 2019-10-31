@@ -55,6 +55,19 @@ const actions = {
         reject(err)
       })
     })
+  },
+  Captcha({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: shopUrl + '/users/captcha',
+        method: 'get',
+        data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 
