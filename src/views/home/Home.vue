@@ -8,7 +8,7 @@
     <recommends/>
     <img style="width: 100%;height: 350px;" src="@/assets/img/testImg/hot.jpg">
     <div style="height: 40px;" v-show="isFixed"></div>
-    <tabControl :class="{fixed: isFixed}" class="tab-control" :title="['流行', '精款', '精选']" ref="tabControl"/>
+    <tabControl :class="{fixed: isFixed}" class="tab-control" :title="['流行', '精款', '精选']" ref="tabControl" @changeType="changeType"/>
     <back-top v-if="show" @click.native="backTop"/>
     <goods :goods="goods"/>
   </div>
@@ -31,6 +31,7 @@
         fontColor: '#fff',
         isFixed: false,
         goods: [],
+        goodsInfo: [],
         show: false,
         tabOffsetTop: 0,
       }
@@ -46,7 +47,10 @@
     created() {
       this.$store.dispatch('home/GetGoods').then(res => {
         console.log(res)
-        this.goods = res.data
+        this.goodsInfo = res.data
+        this.goods = this.goodsInfo.filter(item => {
+          return item.type === 0
+        })
       })
     },
     mounted() {
@@ -77,6 +81,11 @@
             clearInterval(timer)
           }
         }, 16)
+      },
+      changeType(index) {
+        this.goods = this.goodsInfo.filter(item => {
+          return item.type === index
+        })
       }
     }
   }

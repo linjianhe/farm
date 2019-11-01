@@ -50,28 +50,10 @@ const actions = {
       })
     })
   },
-  Login({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: 'login/confirm',
-        method: 'post',
-        data: data
-      }).then(res => {
-        commit('SET_TOKEN', res.data.token)
-        sessionStorage.setItem('userInfo', JSON.stringify(res.data.user))
-        let id = res.data.user.userId
-        // cookie.set('token' + id, res.data.token);
-        this.dispatch('webSocket/InitWebSocket', id)
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
   GetGoods({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: shopUrl + '/goods',
+        url: '/farm/goods',
         method: 'get',
         data: data
       }).then(res => {
@@ -84,7 +66,7 @@ const actions = {
   GetBanner({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: shopUrl + '/home/banner',
+        url: '/farm/home/banner',
         method: 'get',
         data: data
       }).then(res => {

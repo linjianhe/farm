@@ -19,7 +19,8 @@
         </div>
         <div class="login-wrap">
           <input type="text" class="login-input" style="margin-left: 0;" v-model="code" placeholder="请输入验证码" @input="codeCheck($event)"/>
-          <img ref="captcha" @click.prevent="getCaptcha()" width="100px" height="35px" src="http://localhost:3000/users/captcha"/>
+<!--          <img ref="captcha" @click.prevent="getCaptcha()" width="100px" height="35px" :src="codeImg"/>-->
+          <a class="codeImg" v-html="codeImg" @click.prevent="getCaptcha()"></a>
         </div>
       </div>
     </div>
@@ -46,7 +47,8 @@
         password: '', //密码
         switchValue: false, //明文密码开关值
         isShow: true, //是否显示明文密码
-        code: '' //验证码
+        code: '', //验证码
+        codeImg:null
       }
     },
     methods: {
@@ -85,11 +87,18 @@
             })
             this.$store.state.userInfo = res.userInfo
             this.goBack()
-          } else {
+          } else if(res.code === 0) {
             this.$message({
               message: '账号或密码错误',
               type: 'error'
             })
+          } else if(res.code === 101) {
+            this.$message({
+              message: '验证码错误',
+              type: 'error'
+            })
+          } else {
+            console.log(res.msg)
           }
         }).catch(error => {
           alert('网络发生错误')
@@ -118,11 +127,14 @@
         this.isShow = !this.isShow
       },
       getCaptcha() {
-        this.$refs.captcha.src = 'http://localhost:3000/users/captcha?time=' + new Date()
+        // this.$refs.captcha.src = 'http://localhost:3000/users/captcha?time=' + new Date()
+        this.$store.dispatch('user/Captcha').then(res => {
+          this.codeImg = res
+        })
       }
     },
     created () {
-
+      this.getCaptcha()
     }
   }
 </script>
@@ -192,5 +204,8 @@
     text-align: center;
     background-color: #000;
     color: #fff;
+  }
+  .codeImg{
+    margin: -15px 0 0 -30px;
   }
 </style>

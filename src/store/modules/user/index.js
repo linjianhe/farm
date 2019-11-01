@@ -20,7 +20,7 @@ const actions = {
   Login({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: shopUrl + '/users/login',
+        url: '/farm/users/login',
         method: 'post',
         data: data
       }).then(res => {
@@ -33,7 +33,20 @@ const actions = {
   Register({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: shopUrl + '/users/register',
+        url: '/farm/users/register',
+        method: 'post',
+        data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  ForgetPass({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/users/forgetPass',
         method: 'post',
         data: data
       }).then(res => {
@@ -46,7 +59,7 @@ const actions = {
   SendEmail({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: shopUrl + '/users/sendEmail',
+        url: '/farm/users/sendEmail',
         method: 'post',
         data: data
       }).then(res => {
@@ -59,7 +72,7 @@ const actions = {
   Captcha({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: shopUrl + '/users/captcha',
+        url: '/farm/users/captcha',
         method: 'get',
         data: data
       }).then(res => {

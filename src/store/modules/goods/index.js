@@ -19,7 +19,7 @@ const actions = {
   GetGoodsBanner({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: shopUrl + '/home/banner',
+        url: '/farm/home/banner',
         method: 'get',
         data: data
       }).then(res => {

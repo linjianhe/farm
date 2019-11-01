@@ -24,11 +24,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 // 前端跨域设置
-app.use(cors({
-  origin:['http://localhost:8080'],
-  methods:['GET','POST'],
-  alloweHeaders:['Content-Type', 'Authorization']
-}))
+// app.use(cors({
+//   origin:['http://localhost:8080'],
+//   methods:['GET','POST'],
+//   alloweHeaders:['Content-Type', 'Authorization']
+// }))
 
 //session设置
 app.use(session({

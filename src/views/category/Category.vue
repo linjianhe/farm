@@ -68,11 +68,11 @@
     background-color: #eee;
   }
   .category-left{
-    width: 25%;
+    width: 18%;
     overflow: auto;
   }
   .category-right{
-    width: 75%;
+    width: 82%;
     overflow: auto;
   }
   .check{

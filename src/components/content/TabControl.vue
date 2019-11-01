@@ -25,6 +25,7 @@
     methods: {
       changeTab(index) {
         this.currentIndex = index
+        this.$emit('changeType', index)
       }
     }
   }

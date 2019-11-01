@@ -60,12 +60,16 @@
         this.email = event.target.value.replace(/\s+/g,'');
       },
       emailCheck() {
+        if(!this.email) {
+          return false
+        }
         let result = (/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(this.email)
         if(!result) {
           this.$message({
             type: 'warning',
             message: '请输入正确的邮箱'
           })
+          return false
         }
       },
       codeCheck(event) {
@@ -108,22 +112,41 @@
               message: res.msg
             })
           }
-          if(res.result.code === 200) {
+          if(res.code === 200) {
             this.$message({
               type: 'success',
               message: res.msg
             })
+            this.$router.go(-1)
+          }
+          if(res.code === 101) {
+            this.$message({
+              type: 'warning',
+              message: res.msg
+            })
+          }
+          if(res.code === 0) {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          } else {
+            console.log(res.msg)
           }
         }).catch(error => {
           console.log(error)
         })
       }, 500),
       sendEmail() {
-        if(this.email === '' || this.email === undefined || this.email === null) {
+        if(!this.email) {
           this.$message({
             type: 'warning',
             message: '请先输入邮箱'
           })
+          return false
+        }
+        let result = (/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(this.email)
+        if(!result) {
           return false
         }
         let data = {
@@ -132,10 +155,21 @@
         this.time = 60
         this.timer()
         this.disabled = true
-        console.log('----')
-        // this.$store.dispatch('user/SendEmail', data).then(res => {
-        //   console.log(res)
-        // })
+        this.$store.dispatch('user/SendEmail', data).then(res => {
+          if(res.code === 200) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        }).catch(error => {
+          console.log(error)
+        })
       },
       timer() {
         if (this.time > 1) {

@@ -17,54 +17,112 @@ let transporter = nodemailer.createTransport({
   }
 })
 
+//登录接口
 router.post('/login', function(req, res, next) {
-  console.log(req.session.captcha)
   let userName = req.body.userName
   let password = req.body.password
+  let code = req.body.code.toLowerCase()
+
+  //判断验证码是否相等
+  if(code !== req.session.captcha) {
+    return res.json({code:101, msg: '图形验证码错误'})
+  }
+
+  //判断账号密码是否相等
   connection.query('SELECT * from user', function (err, rows, fields) {
     if (err) {
-      return res.json({code:201, msg: '获取失败'})
+      return res.json({code:201, msg: '数据获取失败'})
     }
     if(rows){ //获取用户列表，循环遍历判断当前用户是否存在
       let isTrue = 0
       for (let i=0;i<rows.length;i++) {
         if(rows[i].userName === userName && rows[i].password === password) {
           isTrue = 1
+          req.session.userId = rows[i].userId
           return res.json({code:200, msg: '登录成功', userInfo: rows[i].userName})
         }
       }
       if(!isTrue) {
-        return res.json({code: 201, msg: '账号或者密码错误' })
+        return res.json({code: 0, msg: '账号或者密码错误' })
       }
     }
   })
 });
 
 router.post('/register', function (req, res, next) {
-  console.log(req.body)
   connection.query('select * from user where email = ?', [req.body.email],function (err, rows, fields) {
     if(err){
-      console.log('INSERT ERROR - ', err.message)
-      return;
+      return res.json({code:201, msg: '查询用户是否注册获取失败'})
     }
-    console.log(rows)
     if(rows.length) {
-      return res.json({ code: 202, msg: '账号已经注册过了' })
+      return res.json({ code: 202, msg: '账号已经注册过了'})
     } else {
-      let values = {userName: req.body.email, password: req.body.password, email: req.body.email, money: 0}
-      connection.query('INSERT INTO `user` SET ?', [values],function (err, rows, fields) {
+      //判断邮件验证码
+      connection.query('select * from checkCode where email = ?', [req.body.email],function (err, rows, fields) {
         if(err){
-          console.log('INSERT ERROR - ', err.message)
-          return;
+          return res.json({code:201, msg: '查询用户注册验证码获取失败'})
         }
-        return res.json({ code: 200, msg: '注册成功' })
+        if(rows.length) {
+          if(rows[0].code === req.body.checkCode) {
+            if((new Date()).getTime() - rows[0].date < 5 * 60 * 1000) {
+              let values = {userName: req.body.email, password: req.body.password, email: req.body.email, money: 0}
+              connection.query('INSERT INTO `user` SET ?', [values],function (err, rows, fields) {
+                if(err){
+                  console.log('INSERT ERROR - ', err.message)
+                  return;
+                }
+                return res.json({ code: 200, msg: '注册成功' })
+              })
+            } else {
+              return res.json({code:101, msg: '验证码已过期，请重新发送'})
+            }
+          } else {
+            return res.json({code:0, msg: '验证码错误'})
+          }
+        } else {
+          return res.json({code:0, msg: '验证码查询出现错误，请重新发送'})
+        }
       })
     }
   })
 })
 
 router.post('/forgetPass', function (req, res, next) {
-
+  connection.query('select * from user where email = ?', [req.body.email],function (err, rows, fields) {
+    if(err){
+      return res.json({code:201, msg: '查询用户是否注册获取失败'})
+    }
+    if(!rows.length) {
+      return res.json({ code: 202, msg: '该账号并未注册'})
+    } else {
+      //判断邮件验证码
+      connection.query('select * from checkCode where email = ?', [req.body.email],function (err, rows, fields) {
+        if(err){
+          return res.json({code:201, msg: '查询用户注册验证码获取失败'})
+        }
+        if(rows.length) {
+          if(rows[0].code === req.body.checkCode) {
+            if((new Date()).getTime() - rows[0].date < 5 * 60 * 1000) {
+              let userModSql = 'UPDATE user SET password = ? WHERE email = ?'
+              connection.query(userModSql,[req.body.password,req.body.email],function (err, rows, fields) {
+                if(err){
+                  console.log('[UPDATE ERROR] - ',err.message);
+                  return;
+                }
+                return res.json({code:200, msg: '找回密码成功'})
+              })
+            } else {
+              return res.json({code:101, msg: '验证码已过期，请重新发送'})
+            }
+          } else {
+            return res.json({code:0, msg: '验证码错误'})
+          }
+        } else {
+          return res.json({code:0, msg: '验证码查询出现错误，请重新发送'})
+        }
+      })
+    }
+  })
 })
 
 router.post('/sendEmail', function (req, res, next) {
@@ -80,6 +138,28 @@ router.post('/sendEmail', function (req, res, next) {
     if (error) {
       return res.json({ code: 202, msg: '发送失败' })
     }
+    connection.query('select * from checkCode where email = ?', [req.body.email],function (err, rows, fields) {
+      if(err){
+        return res.json({code:201, msg: '数据获取失败'})
+      }
+      if(rows.length) {
+        //之前已经发过验证码，把数据库中数据删除
+        let  userDelSql = 'DELETE FROM checkCode WHERE email = ?';
+        connection.query(userDelSql, [email],function (err, result) {
+          if(err){
+            console.log('[DELETE ERROR] - ',err.message)
+            return
+          }
+        })
+      }
+      let values = {email: email, code: code, date: (new Date()).getTime()}
+      connection.query('INSERT INTO `checkCode` SET ?', [values],function (err, rows, fields) {
+        if(err){
+          console.log('INSERT ERROR - ', err.message)
+          return;
+        }
+      })
+    })
     return res.json({ code: 200, msg: '邮件发送成功' })
   })
 })
@@ -93,7 +173,7 @@ router.get('/captcha', function (req, res, next) {
     size: 4
   })
   req.session.captcha = captcha.text.toLocaleLowerCase()
-  console.log(req.session.captcha)
+  console.log(req.session)
   res.type('svg')
   res.send(captcha.data)
 })

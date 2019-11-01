@@ -33,7 +33,7 @@
     width: 48%;
     text-align: center;
     background-color: #fff;
-    margin: 5px 0;
+    margin: 5px 3px;
     border-radius: 10px;
   }
   .goods-item img{

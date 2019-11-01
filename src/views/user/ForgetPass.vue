@@ -8,17 +8,17 @@
       <h2>忘记密码了(╥╯^╰╥)</h2>
       <div class="forgetPass-content">
         <img class="forgetPass-img" src="../../assets/img/email.svg"/>
-        <input type="text" class="forgetPass-input" v-model="email" placeholder="请输入邮箱" onkeyup="this.value=this.value.replace(/\s+/g,'')" @input="userNameCheck($event)"/>
+        <input type="text" class="forgetPass-input" v-model="email" placeholder="请输入邮箱" @input="userNameCheck($event)" @blur="emailCheck"/>
       </div>
       <div class="forgetPass-content">
         <img class="forgetPass-img" src="../../assets/img/pass.svg"/>
-        <input type="text" class="forgetPass-input" v-model="checkCode" placeholder="请输入验证码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="passCheck($event)"/>
-        <div class="sendEmail">发送邮件</div>
+        <input type="text" class="forgetPass-input" v-model="checkCode" placeholder="请输入验证码" @input="codeCheck($event)"/>
+        <div class="sendEmail" :class="{disabled: disabled}" @click="sendEmail">{{btn}}</div>
       </div>
       <div class="forgetPass-content">
         <img class="forgetPass-img" src="../../assets/img/pass.svg"/>
-        <input v-if="isShow" type="password" class="forgetPass-input" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="passCheck($event)"/>
-        <input v-else type="text" class="forgetPass-input" v-model="password" placeholder="请输入密码" onkeyup="this.value=this.value.replace(/[^\w]/g,'');" @input="passCheck($event)"/>
+        <input v-if="isShow" type="password" class="forgetPass-input" v-model="password" placeholder="请输入密码" @input="passCheck($event)"/>
+        <input v-else type="text" class="forgetPass-input" v-model="password" placeholder="请输入密码" @input="passCheck($event)"/>
         <el-switch v-model="value" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
       </div>
     </div>
@@ -40,7 +40,10 @@
         checkCode: '',
         password: '',
         value: false,
-        isShow: true
+        isShow: true,
+        btn: '发送邮件',
+        time: 60,
+        disabled: false
       }
     },
     methods: {
@@ -50,8 +53,132 @@
       changeShow() {
         this.isShow = !this.isShow
       },
-      forgetPass() {
-
+      userNameCheck(event) {
+        this.email = event.target.value.replace(/\s+/g,'');
+      },
+      emailCheck() {
+        if(!this.email) {
+          return false
+        }
+        let result = (/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(this.email)
+        if(!result) {
+          this.$message({
+            type: 'warning',
+            message: '请输入正确的邮箱'
+          })
+          return false
+        }
+      },
+      codeCheck(event) {
+        this.checkCode = event.target.value.replace(/[^\w]/g,'');
+      },
+      passCheck(event) {
+        this.password = event.target.value.replace(/[^\w]/g,'');
+      },
+      forgetPass: utils.debounce(function () {
+          if(!this.email){
+            this.$message({
+              message: '邮箱不能为空',
+              type: 'warning'
+            })
+            return false
+          }
+          if(!this.checkCode) {
+            this.$message({
+              message: '验证码不能为空',
+              type: 'warning'
+            })
+            return false
+          }
+          if(!this.password) {
+            this.$message({
+              message: '密码不能为空',
+              type: 'warning'
+            })
+            return false
+          }
+          let userInfo = {
+            email: this.email,
+            checkCode: this.checkCode,
+            password: this.password,
+          }
+          this.$store.dispatch('user/ForgetPass', userInfo).then(res => {
+            if(res.code === 202) {
+              this.$message({
+                type: 'warning',
+                message: res.msg
+              })
+            }
+            if(res.code === 200) {
+              this.$message({
+                type: 'success',
+                message: res.msg
+              })
+              this.$router.go(-1)
+            }
+            if(res.code === 101) {
+              this.$message({
+                type: 'warning',
+                message: res.msg
+              })
+            }
+            if(res.code === 0) {
+              this.$message({
+                type: 'error',
+                message: res.msg
+              })
+            } else {
+              console.log(res.msg)
+            }
+          }).catch(error => {
+            console.log(error)
+          })
+        },500),
+      sendEmail() {
+        if(!this.email) {
+          this.$message({
+            type: 'warning',
+            message: '请先输入邮箱'
+          })
+          return false
+        }
+        let result = (/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(this.email)
+        if(!result) {
+          return false
+        }
+        let data = {
+          email: this.email
+        }
+        this.time = 60
+        this.timer()
+        this.disabled = true
+        console.log('----')
+        this.$store.dispatch('user/SendEmail', data).then(res => {
+          if(res.code === 200) {
+            this.$message({
+              type: 'success',
+              message: res.msg
+            })
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.msg
+            })
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      timer() {
+        if (this.time > 1) {
+          this.time--;
+          this.btn = this.time + 's'
+          setTimeout(this.timer, 1000)
+        } else {
+          this.time = 60
+          this.disabled = false
+          this.btn = "发送邮件"
+        }
       }
     }
   }
@@ -100,11 +227,20 @@
     border: none;
   }
   .sendEmail{
+    height: 25px;
     width: 75px;
-    line-height: 35px;
+    line-height: 25px;
     text-align: center;
-    color: #b14545;
+    color: #fff;
     font-size: 12px;
+    background-color: #a0cfff;
+    border-radius: 10px;
+    align-self: center;
+  }
+  .disabled{
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: #ddd;
   }
   .forgetPass-btn{
     width: 250px;
