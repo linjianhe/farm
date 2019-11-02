@@ -7,7 +7,7 @@ const shopUrl = urlList.shop
 Vue.use(Vuex)
 
 const state = {
-  userInfo: ''
+  userInfo: {}
 }
 
 const getters = {
@@ -75,6 +75,19 @@ const actions = {
         url: '/farm/users/captcha',
         method: 'get',
         data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  IsLogin({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/users/isLogin',
+        method: 'get',
+        params: data
       }).then(res => {
         resolve(res)
       }).catch(err => {

@@ -85,7 +85,7 @@
               message: '登陆成功',
               type: 'success'
             })
-            this.$store.state.userInfo = res.userInfo
+            this.$store.state.user.userInfo = res.userInfo
             this.goBack()
           } else if(res.code === 0) {
             this.$message({

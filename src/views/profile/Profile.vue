@@ -2,7 +2,7 @@
   <div class="profile">
     <div class="profile-img">
       <img src="@/assets/img/testImg/yaotou.jpg" alt=""/>
-      <span>{{$store.state.userInfo || '未登录，请先登录'}}</span>
+      <span>{{$store.state.user.userInfo.userName || '未登录，请先登录'}}</span>
     </div>
     <div class="profile-menu">
       <div class="profile-menu-item" @click="goOrder">
@@ -35,7 +35,6 @@
 </template>
 
 <script>
-  import axios from 'axios'
 export default {
   name: 'profile',
   data() {
@@ -59,6 +58,13 @@ export default {
     // this.$store.dispatch('home/Test').then(res => {
     //   console.log(res)
     // })
+    this.$store.dispatch('user/IsLogin').then(res => {
+      if(res.code === 200) {
+        this.$store.state.user.userInfo = res.userInfo
+      } else {
+        
+      }
+    })
   }
 }
 </script>

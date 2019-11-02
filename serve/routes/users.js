@@ -39,7 +39,7 @@ router.post('/login', function(req, res, next) {
         if(rows[i].userName === userName && rows[i].password === password) {
           isTrue = 1
           req.session.userId = rows[i].userId
-          return res.json({code:200, msg: '登录成功', userInfo: rows[i].userName})
+          return res.json({code:200, msg: '登录成功', userInfo: {userName: rows[i].userName}})
         }
       }
       if(!isTrue) {
@@ -176,6 +176,23 @@ router.get('/captcha', function (req, res, next) {
   console.log(req.session)
   res.type('svg')
   res.send(captcha.data)
+})
+
+//判断用户是否已经登录过
+router.get('/isLogin',function (req, res, next) {
+  let userId = req.session.userId
+  console.log(userId)
+  connection.query('select * from user where userId = ?', [userId],function (err, rows, fields) {
+    if(err) {
+      return res.json({ code: 201, msg: '数据获取失败' })
+    } else {
+      if(rows.length) {
+        return res.json({ code: 200, msg: '用户已经登录', userInfo: {userName: rows[0].userName}})
+      } else {
+        return res.json({ code: 201, msg: '用户未登录'})
+      }
+    }
+  })
 })
 
 module.exports = router;
