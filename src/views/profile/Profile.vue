@@ -25,9 +25,9 @@
         <span>我的消息</span>
         <p>></p>
       </div>
-      <div @click="login">
+      <div v-if="Object.keys($store.state.user.userInfo).length !== 0" @click="logout">
         <img src="@/assets/img/message.svg"/>
-        <span>登录</span>
+        <span>注销</span>
         <p>></p>
       </div>
     </div>
@@ -52,6 +52,13 @@ export default {
       this.$router.push({
         path: '/login'
       })
+    },
+    logout() {
+      this.$store.dispatch('user/Logout').then(res => {
+        if(res.code === 200) {
+          this.$router.push('/login')
+        }
+      })
     }
   },
   created() {
@@ -62,9 +69,20 @@ export default {
       if(res.code === 200) {
         this.$store.state.user.userInfo = res.userInfo
       } else {
-        
+        this.$store.commit('user/CLEAR_USER')
+        this.$confirm('未登录，是否去登录?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          center: true
+        }).then(() => {
+          this.$router.push('/login')
+        }).catch(() => {
+        })
       }
     })
+  },
+  computed: {
   }
 }
 </script>

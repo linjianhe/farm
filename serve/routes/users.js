@@ -39,7 +39,7 @@ router.post('/login', function(req, res, next) {
         if(rows[i].userName === userName && rows[i].password === password) {
           isTrue = 1
           req.session.userId = rows[i].userId
-          return res.json({code:200, msg: '登录成功', userInfo: {userName: rows[i].userName}})
+          return res.json({code:200, msg: '登录成功', userInfo: {userName: rows[i].userName, money: rows[i].money}})
         }
       }
       if(!isTrue) {
@@ -187,12 +187,20 @@ router.get('/isLogin',function (req, res, next) {
       return res.json({ code: 201, msg: '数据获取失败' })
     } else {
       if(rows.length) {
-        return res.json({ code: 200, msg: '用户已经登录', userInfo: {userName: rows[0].userName}})
+        return res.json({ code: 200, msg: '用户已经登录', userInfo: {userName: rows[0].userName, money: rows[0].money}})
       } else {
         return res.json({ code: 201, msg: '用户未登录'})
       }
     }
   })
+})
+
+//登出
+router.get('/logout', function (req, res, next) {
+  if(req.session.userId) {
+    delete req.session.userId
+    return res.json({ code: 200, msg: '退出成功'})
+  }
 })
 
 module.exports = router;

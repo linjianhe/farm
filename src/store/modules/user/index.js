@@ -14,6 +14,9 @@ const getters = {
 }
 
 const mutations = {
+  CLEAR_USER(state) {
+    state.userInfo = {}
+  }
 }
 
 const actions = {
@@ -23,6 +26,19 @@ const actions = {
         url: '/farm/users/login',
         method: 'post',
         data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  Logout({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/users/logout',
+        method: 'get',
+        params: data
       }).then(res => {
         resolve(res)
       }).catch(err => {

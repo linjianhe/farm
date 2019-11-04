@@ -12,6 +12,7 @@
   import NavBar from '@/components/common/navBar/NavBar'
   import GoodsList from '@/components/content/GoodsList'
   import CartBottomBar from '@/components/content/CartBottomBar'
+  import { Toast } from 'vant'
   export default {
     name: 'cart',
     components: {
@@ -21,35 +22,21 @@
     },
     data() {
       return {
-        goodsList: [
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 3999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 1599.00, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 3999.99, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 2999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 3999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 12999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 3999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 3999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 4999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 5999, num: 1, check: false},
-          {img: 'https://gd4.alicdn.com/imgextra/i4/75859100/O1CN01OXWmHO2H5ql6Rotse_!!75859100.jpg', name: '新品Xiaomi/小米9Pro 5g官方旗舰骁龙855plus全面屏手机mix4pro正', price: 3999, num: 1, check: false}
-        ]
+        goodsList: [],
+        goodsLength: 0
       }
     },
     computed: {
-      goodsLength() {
-        return this.goodsList.length
-      },
       totalPrice() {
         return this.goodsList.filter(item => {
-          return item.check
+          return item.checked
         }).reduce((preValue, item) => {
-          return preValue += item.price * item.num
+          return preValue += item.special_price * item.num
         },0)
       },
       flag() {
         if(this.goodsList.length) {
-          return !this.goodsList.filter(item => !item.check).length
+          return !this.goodsList.filter(item => !item.checked).length
         } else {
           return false
         }
@@ -57,16 +44,35 @@
     },
     methods: {
       checkAll() {
+        console.log('全选')
         if(!this.flag){
           for(let item of this.goodsList) {
-            item.check = true
+            item.checked = true
           }
         }else {
           for(let item of this.goodsList) {
-            item.check = false
+            item.checked = false
           }
         }
       }
+    },
+    created() {
+      this.$store.dispatch('goods/CartInfo').then(res => {
+        if(res.code === 200) {
+          this.goodsList = res.data
+          this.goodsLength = res.data.length
+        } else {
+          this.$confirm('未登录，是否去登录?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then(() => {
+            this.$router.push('/login')
+          }).catch(() => {
+          })
+        }
+      })
     }
   }
 </script>
