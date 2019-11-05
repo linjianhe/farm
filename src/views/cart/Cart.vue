@@ -3,7 +3,7 @@
     <NavBar class="nav">
       <div slot="center">购物车({{goodsLength}})</div>
     </NavBar>
-    <GoodsList :goodsList="goodsList"></GoodsList>
+    <GoodsList :goodsList="goodsList" ></GoodsList>
     <cart-bottom-bar :totalPrice="totalPrice" @checkAll="checkAll" :flag="flag"></cart-bottom-bar>
   </div>
 </template>
@@ -12,6 +12,7 @@
   import NavBar from '@/components/common/navBar/NavBar'
   import GoodsList from '@/components/content/GoodsList'
   import CartBottomBar from '@/components/content/CartBottomBar'
+  import eventBus from '../../common/eventBus'
   import { Toast } from 'vant'
   export default {
     name: 'cart',
@@ -54,7 +55,7 @@
             item.checked = false
           }
         }
-      }
+      },
     },
     created() {
       this.$store.dispatch('goods/CartInfo').then(res => {
@@ -72,6 +73,21 @@
           }).catch(() => {
           })
         }
+      })
+      eventBus.$on('numChange', (item,num) => {
+        console.log(item,num)
+        let data = {
+          goodsId: item.productId,
+          goodsSkuId: item.goods_sku_id,
+          goodsNum: item.num + num
+        }
+        this.$store.dispatch('goods/UpdateCart', data).then(res => {
+          if(res.code === 200) {
+            item.num = item.num + num
+          } else {
+            this.$message(res.msg)
+          }
+        })
       })
     }
   }

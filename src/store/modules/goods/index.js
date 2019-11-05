@@ -80,6 +80,19 @@ const actions = {
         reject(err)
       })
     })
+  },
+  UpdateCart({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/goods/updateCart',
+        method: 'get',
+        params: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 

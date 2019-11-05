@@ -181,7 +181,6 @@ router.get('/captcha', function (req, res, next) {
 //判断用户是否已经登录过
 router.get('/isLogin',function (req, res, next) {
   let userId = req.session.userId
-  console.log(userId)
   connection.query('select * from user where userId = ?', [userId],function (err, rows, fields) {
     if(err) {
       return res.json({ code: 201, msg: '数据获取失败' })

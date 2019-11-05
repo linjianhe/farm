@@ -2,8 +2,8 @@
   <div class="detail">
     <DetailNav></DetailNav>
     <el-carousel :interval="3000" arrow="always" height="200px">
-      <el-carousel-item v-for="(item,index) in chooseSku" :key="index">
-        <img :src="chooseSku.sku_url" alt=""/>
+      <el-carousel-item v-for="(item,index) in goodsSku" :key="index">
+        <img :src="item.sku_url" alt=""/>
       </el-carousel-item>
     </el-carousel>
     <div class="goods-info">

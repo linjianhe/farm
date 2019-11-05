@@ -6,17 +6,19 @@
     </div>
     <div class="item-info">
       <div class="item-title">{{goodsItem.productName}}</div>
+      <div class="item-sku">{{goodsItem.sku_name}}</div>
       <div class="info-bottom">
         <div class="item-price">￥{{goodsItem.special_price | price}}</div>
         <input type="button" value="-" class="num-down" :disabled="goodsItem.num<1" @click="numDown"/>
         <div class="item-num">{{goodsItem.num}}</div>
-        <input type="button" value="+" class="num-up" :disabled="goodsItem.num>=5" @click="numUp"/>
+        <input type="button" value="+" class="num-up"  @click="numUp"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import eventBus from '../../common/eventBus'
   export default {
     name: 'GoodsListItem',
     props: {
@@ -50,10 +52,10 @@
         this.goodsItem.checked = !this.goodsItem.checked
       },
       numDown() {
-        this.goodsItem.num --
+        eventBus.$emit('numChange', this.goodsItem, -1)
       },
       numUp() {
-        this.goodsItem.num ++
+        eventBus.$emit('numChange', this.goodsItem, 1)
       }
     },
     created() {
@@ -87,10 +89,12 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-size: 18px;
+    margin-bottom: 10px;
   }
   .info-bottom{
     display: flex;
-    margin-top: 60px;
+    margin-top: 45px;
   }
   .item-price{
     color: red;
