@@ -6,6 +6,7 @@ const logger = require('morgan');
 const cors = require('cors')
 const session = require('express-session')
 
+//引入中间件
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const goodsRouter = require('./routes/goods');
@@ -22,7 +23,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'))); //为程序托管位于程序目录下的public目录下的静态资源
 // 前端跨域设置
 // app.use(cors({
 //   origin:['http://localhost:8080'],
@@ -42,6 +43,7 @@ app.use(session({
   })
 )
 
+//使用中间件和路由匹配
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goods',goodsRouter);

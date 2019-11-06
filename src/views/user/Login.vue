@@ -18,7 +18,7 @@
           <el-switch v-model="switchValue" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
         </div>
         <div class="login-wrap">
-          <input type="text" class="login-input" style="margin-left: 0;" v-model="code" placeholder="请输入验证码" @input="codeCheck($event)"/>
+          <input type="text" class="login-input" style="margin-left: 0;" v-model="code" placeholder="请输入验证码" @input="codeCheck($event)" @keyup.enter="login"/>
 <!--          <img ref="captcha" @click.prevent="getCaptcha()" width="100px" height="35px" :src="codeImg"/>-->
           <a class="codeImg" v-html="codeImg" @click.prevent="getCaptcha()"></a>
         </div>
