@@ -84,7 +84,7 @@
         }
       },
       addCart: utils.throttle(function (e) {
-        if (this.chooseSku) {
+        if (this.currentIndex !== -1) {
           if (this.chooseSku.stock === 0) {
             this.$message('没有货源了！')
           } else {
@@ -111,8 +111,7 @@
         }
       }, 2500),
       buyNow: utils.throttle(function () {
-        console.log('----')
-        if (this.chooseSku) {
+        if (this.currentIndex !== -1) {
           if (this.chooseSku.stock === 0) {
             this.$message('已无货源！')
           } else {

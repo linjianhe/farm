@@ -31,6 +31,7 @@
     },
     data() {
       return {
+        i: 0
       }
     },
     computed: {
@@ -59,7 +60,7 @@
       }
     },
     created() {
-    }
+    },
   }
 </script>
 

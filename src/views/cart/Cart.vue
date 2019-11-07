@@ -24,7 +24,8 @@
     data() {
       return {
         goodsList: [],
-        goodsLength: 0
+        goodsLength: 0,
+        i: 0
       }
     },
     computed: {
@@ -89,7 +90,11 @@
           }
         })
       })
-    }
+    },
+    beforeDestroy () {
+      console.log('页面即将摧毁')
+      eventBus.$off('numChange')
+    },
   }
 </script>
 
