@@ -35,6 +35,7 @@
 </template>
 
 <script>
+  import { Notify,Toast,Dialog } from 'vant'
 export default {
   name: 'profile',
   data() {
@@ -56,6 +57,7 @@ export default {
     logout() {
       this.$store.dispatch('user/Logout').then(res => {
         if(res.code === 200) {
+          Toast.success('登出成功');
           this.$router.push('/login')
         }
       })
@@ -70,14 +72,13 @@ export default {
         this.$store.state.user.userInfo = res.userInfo
       } else {
         this.$store.commit('user/CLEAR_USER')
-        this.$confirm('未登录，是否去登录?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-          center: true
+        Dialog.confirm({
+          title: '提示',
+          message: '您还未登录，是否去登录?'
         }).then(() => {
           this.$router.push('/login')
         }).catch(() => {
+          // on cancel
         })
       }
     })

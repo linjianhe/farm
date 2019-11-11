@@ -16,12 +16,13 @@
 
 <script>
   import NavBar from '@/components/common/navBar/NavBar'
-
   import Swiper from '@/components/content/Swiper'
   import Recommends from '@/components/content/Recommends'
   import TabControl from '@/components/content/TabControl'
   import BackTop from '@/components/content/BackTop'
   import Goods from '@/components/content/Goods'
+  import { Toast } from 'vant'
+  import { Notify } from 'vant'
 
   export default {
     name: 'home',
@@ -45,12 +46,19 @@
       Goods
     },
     created() {
+      Toast.loading({
+        message: '加载中...',
+        forbidClick: true
+      })
       this.$store.dispatch('home/GetGoods').then(res => {
         console.log(res)
-        this.goodsInfo = res.data
-        this.goods = this.goodsInfo.filter(item => {
-          return item.type === 0
-        })
+        if(res.code === 200) {
+          this.goodsInfo = res.data
+          this.goods = this.goodsInfo.filter(item => {
+            return item.type === 0
+          })
+          Toast.success('加载成功');
+        }
       })
     },
     mounted() {

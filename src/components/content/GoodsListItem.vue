@@ -2,7 +2,7 @@
   <div class="goodsListItem">
     <img :src="imgUrl" @click="imgClick"/>
     <div class="item-img">
-      <img :src="goodsItem.productImg" alt=""/>
+      <img :src="goodsItem.sku_url" alt=""/>
     </div>
     <div class="item-info">
       <div class="item-title">{{goodsItem.productName}}</div>

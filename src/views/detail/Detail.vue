@@ -1,35 +1,37 @@
 <template>
   <div class="detail">
     <DetailNav></DetailNav>
-    <el-carousel :interval="3000" arrow="always" height="200px">
-      <el-carousel-item v-for="(item,index) in goodsSku" :key="index">
-        <img :src="item.sku_url" alt=""/>
-      </el-carousel-item>
-    </el-carousel>
-    <div class="goods-info">
-      <div class="base-info">
-        <h1>{{goods.productName}}</h1>
-        <p>{{goods.describe}}</p>
-      </div>
-      <div class="price">
-        <span class="price-tag">价格：</span>
-        <span class="price-sp">￥{{chooseSku.special_price}}</span>
-        <span class="price-sale">￥{{chooseSku.sale_price}}</span>
-      </div>
-      <div class="sku">
-        <div class="sku-item" :class="{check:currentIndex === index}" v-for="(item, index) in goodsSku" @click="changeType(index)">
-          <span>{{item.sku_name}}</span>
+    <van-pull-refresh  v-model="isLoading" @refresh="onRefresh">
+      <el-carousel :interval="3000" arrow="always" height="200px">
+        <el-carousel-item v-for="(item,index) in goodsSku" :key="index">
+          <img :src="item.sku_url" alt=""/>
+        </el-carousel-item>
+      </el-carousel>
+      <div class="goods-info">
+        <div class="base-info">
+          <h1>{{goods.productName}}</h1>
+          <p>{{goods.describe}}</p>
+        </div>
+        <div class="price">
+          <span class="price-tag">价格：</span>
+          <span class="price-sp">￥{{chooseSku.special_price | price}}</span>
+          <span class="price-sale" v-if="chooseSku.special_price !== chooseSku.sale_price">￥{{chooseSku.sale_price | price}}</span>
+        </div>
+        <div class="sku">
+          <div class="sku-item" :class="{check:currentIndex === index}" v-for="(item, index) in goodsSku" @click="changeType(index)">
+            <span>{{item.sku_name}}</span>
+          </div>
+        </div>
+        <div class="cont-buy">
+          <p style="line-height: 25px;margin-right: auto;font-size:20px;">购买数量</p>
+          <div style="display: flex;flex-direction: row;margin-right: 5%">
+            <button class="numDown"  :disabled="number <= 1" @click="down">-</button>
+            <input class="numValue" type="number" v-model="number" placeholder="0" @input="changeNum($event)"/>
+            <button class="numUp"  :disabled="number >= chooseSku.stock"  @click="add">+</button>
+          </div>
         </div>
       </div>
-      <div class="cont-buy">
-        <p style="line-height: 25px;margin-right: auto;font-size:20px;">购买数量</p>
-        <div style="display: flex;flex-direction: row;margin-right: 5%">
-          <button class="numDown"  :disabled="number <= 1" @click="down">-</button>
-          <input class="numValue" type="number" v-model="number" placeholder="0" @input="changeNum($event)"/>
-          <button class="numUp"  :disabled="number >= chooseSku.stock"  @click="add">+</button>
-        </div>
-      </div>
-    </div>
+    </van-pull-refresh>
     <div class="bottom-warp">
       <div class="total">价格：￥{{total}}</div>
       <div class="into-cart" @click="addCart">加入购物车</div>
@@ -41,6 +43,7 @@
 <script>
   import DetailNav from '@/components/content/DetailNavBar'
   import utils from '@/common/utils'
+  import {Toast, Notify } from 'vant'
   export default {
     name: 'detail',
     components: {
@@ -53,10 +56,23 @@
         currentIndex: 0,
         goods: {},
         goodsSku: [],
-        chooseSku: {}
+        chooseSku: {},
+        isLoading: false
+      }
+    },
+    filters: {
+      price(aa) {
+        return aa.toFixed(2)
       }
     },
     methods: {
+      onRefresh() {
+        setTimeout(() => {
+          Toast('刷新成功');
+          this.isLoading = false;
+          this.count++;
+        }, 500);
+      },
       down() {
         this.number = Number(this.number) - 1
       },
@@ -65,7 +81,7 @@
       },
       changeNum(e) {
         if (e.target.value > this.chooseSku.stock) {
-          this.$message('超出数量范围')
+          Notify({type:'warning', message:'超出数量范围'})
           this.number = this.chooseSku.stock
         } else {
           this.number = e.target.value.replace(/\D/g, '')
@@ -86,7 +102,7 @@
       addCart: utils.throttle(function (e) {
         if (this.currentIndex !== -1) {
           if (this.chooseSku.stock === 0) {
-            this.$message('没有货源了！')
+            Notify({type:'warning', message:'没有货源了！'})
           } else {
             let data = {
               goodsId: this.id,
@@ -97,9 +113,9 @@
             this.$store.dispatch('goods/AddCart', data).then(res => {
               // 马上请求购物车数量，如果相同商品就不加1，不同就+1
               if (res.code === 200) {
-                this.$message(res.msg)
+                Toast.success(res.msg)
               } else if (res.code === 201) {
-                this.$message(res.msg)
+                Notify({type:'warning', message: res.msg})
               }
               console.log(res)
             }, err => {
@@ -107,50 +123,31 @@
             })
           }
         } else {
-          this.$message('请选择规格！')
+          Notify({type: 'warning', message: '请选择规格！'})
         }
       }, 2500),
       buyNow: utils.throttle(function () {
         if (this.currentIndex !== -1) {
           if (this.chooseSku.stock === 0) {
-            this.$message('已无货源！')
+            Notify({type: 'warning', message: '已无货源！'})
           } else {
             let goodsList = [{
-              goodsId: this.goodsId,
-              skuId: this.chooseSku.skuId,
-              amount: this.number
+              sku_url: this.chooseSku.sku_url,
+              productName: this.goods.productName,
+              special_price: this.chooseSku.special_price,
+              goodsId: this.id,
+              sku_name: this.chooseSku.sku_name,
+              num: this.number
             }]
-            this.$store.dispatch('goods/BuyNow', goodsList).then(res => {
-              if (res.code === 1) {
-                // console.log('token:', res.data.re.token)
-                // let obj = {
-                //   del: false,
-                //   discountPrice: this.chooseGoods.specialPrice,
-                //   goodsId: this.goodsId,
-                //   goodsImgUrl: this.chooseGoods.imgList[0],
-                //   goodsName: this.goods.goodsName,
-                //   goodsNum: this.number,
-                //   goodsSkuId: this.chooseGoods.skuId,
-                //   goodsSkuName: this.chooseGoods.skuName,
-                //   goodsState: 2,
-                //   salePrice: this.chooseGoods.salePrice
-                // }
-                // this.$app.$base.$goto('/pages/order/submitOrder/submitOrder', 'goods', {
-                //   list: [obj],
-                //   token: res.data.re.token
-                // })
-                console.log(res)
-              } else if (res.code === 0) {
-                console.log(res.msg)
-              } else {
-                console.log(res.msg)
+            this.$router.push({
+              name  : 'confirmBuy',
+              params: {
+                goods: goodsList
               }
-            }, err => {
-              console.log(err)
             })
           }
         } else {
-          this.$message('请选择规格！')
+          Notify({type: 'warning', message: '请选择规格！'})
         }
       }, 2500)
     },
@@ -167,6 +164,7 @@
           this.goodsSku = res.data.goodsSku
           this.goods = res.data.goods
           this.chooseSku = this.goodsSku[0]
+          Toast.success('加载成功')
         }
       })
     }
@@ -179,7 +177,7 @@
     z-index: 98;
     background-color: #fff;
     width: 100%;
-    height: calc(100vh - 49px);
+    height: calc(100vh - 44px);
     overflow: scroll;
   }
   .el-carousel__item img {
@@ -191,6 +189,7 @@
   }
   .base-info h1{
     text-align: center;
+    font-size: 26px;
   }
   .base-info p{
     margin: 0 20px;

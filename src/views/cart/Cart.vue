@@ -4,7 +4,7 @@
       <div slot="center">购物车({{goodsLength}})</div>
     </NavBar>
     <GoodsList :goodsList="goodsList" ></GoodsList>
-    <cart-bottom-bar :totalPrice="totalPrice" @checkAll="checkAll" :flag="flag"></cart-bottom-bar>
+    <cart-bottom-bar :totalPrice="totalPrice" @checkAll="checkAll" :flag="flag" @goConfirmBuy="goConfirmBuy"></cart-bottom-bar>
   </div>
 </template>
 
@@ -13,7 +13,7 @@
   import GoodsList from '@/components/content/GoodsList'
   import CartBottomBar from '@/components/content/CartBottomBar'
   import eventBus from '../../common/eventBus'
-  import { Toast } from 'vant'
+  import { Dialog } from 'vant'
   export default {
     name: 'cart',
     components: {
@@ -46,7 +46,6 @@
     },
     methods: {
       checkAll() {
-        console.log('全选')
         if(!this.flag){
           for(let item of this.goodsList) {
             item.checked = true
@@ -57,6 +56,17 @@
           }
         }
       },
+      goConfirmBuy() {
+        let goodsList = this.goodsList.filter(item => {
+          return item.checked
+        })
+        this.$router.push({
+          name  : 'confirmBuy',
+          params: {
+            goods: goodsList
+          }
+        })
+      }
     },
     created() {
       this.$store.dispatch('goods/CartInfo').then(res => {
@@ -64,14 +74,13 @@
           this.goodsList = res.data
           this.goodsLength = res.data.length
         } else {
-          this.$confirm('未登录，是否去登录?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning',
-            center: true
+          Dialog.confirm({
+          title: '提示',
+          message: '您还未登录，是否去登录?'
           }).then(() => {
             this.$router.push('/login')
           }).catch(() => {
+            // on cancel
           })
         }
       })

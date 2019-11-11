@@ -29,6 +29,7 @@
 <script>
   import NavBar from '@/components/common/navBar/NavBar'
   import utils from '@/common/utils'
+  import { Notify,Toast } from 'vant'
   export default {
     name: 'forgetPass',
     components: {
@@ -62,10 +63,7 @@
         }
         let result = (/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(this.email)
         if(!result) {
-          this.$message({
-            type: 'warning',
-            message: '请输入正确的邮箱'
-          })
+          Notify({ type: 'danger', message: '请输入正确的邮箱' })
           return false
         }
       },
@@ -77,24 +75,15 @@
       },
       forgetPass: utils.debounce(function () {
           if(!this.email){
-            this.$message({
-              message: '邮箱不能为空',
-              type: 'warning'
-            })
+            Notify({ type: 'danger', message: '邮箱不能为空' })
             return false
           }
           if(!this.checkCode) {
-            this.$message({
-              message: '验证码不能为空',
-              type: 'warning'
-            })
+            Notify({ type: 'danger', message: '验证码不能为空' })
             return false
           }
           if(!this.password) {
-            this.$message({
-              message: '密码不能为空',
-              type: 'warning'
-            })
+            Notify({ type: 'danger', message: '密码不能为空' })
             return false
           }
           let userInfo = {
@@ -104,29 +93,17 @@
           }
           this.$store.dispatch('user/ForgetPass', userInfo).then(res => {
             if(res.code === 202) {
-              this.$message({
-                type: 'warning',
-                message: res.msg
-              })
+              Notify({ type: 'warning', message: res.msg})
             }
             if(res.code === 200) {
-              this.$message({
-                type: 'success',
-                message: res.msg
-              })
+              Toast.success('找回密码成功')
               this.$router.go(-1)
             }
             if(res.code === 101) {
-              this.$message({
-                type: 'warning',
-                message: res.msg
-              })
+              Notify({ type: 'warning', message: res.msg})
             }
             if(res.code === 0) {
-              this.$message({
-                type: 'error',
-                message: res.msg
-              })
+              Notify({ type: 'danger', message: res.msg})
             } else {
               console.log(res.msg)
             }
@@ -136,10 +113,7 @@
         },500),
       sendEmail() {
         if(!this.email) {
-          this.$message({
-            type: 'warning',
-            message: '请先输入邮箱'
-          })
+          Notify({ type: 'warning', message: '请先输入邮箱'})
           return false
         }
         let result = (/^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/).test(this.email)
@@ -155,15 +129,9 @@
         console.log('----')
         this.$store.dispatch('user/SendEmail', data).then(res => {
           if(res.code === 200) {
-            this.$message({
-              type: 'success',
-              message: res.msg
-            })
+            Notify({ type: 'success', message: res.msg})
           } else {
-            this.$message({
-              type: 'error',
-              message: res.msg
-            })
+            Notify({ type: 'danger', message: res.msg})
           }
         }).catch(error => {
           console.log(error)

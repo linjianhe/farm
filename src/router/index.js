@@ -11,6 +11,8 @@ const Order = () => import('../views/order/Order')
 const Login = () => import('../views/user/Login')
 const ForgetPass = () => import('../views/user/ForgetPass')
 const Register = () => import('../views/user/Register')
+const ConfirmBuy = () => import('../views/order/ConfirmBuy')
+const PayOrder = () => import('../views/order/PayOrder')
 
 Vue.use(Router)
 
@@ -61,6 +63,16 @@ export default new Router({
     {
       path: '/register',
       component: Register
+    },
+    {
+      path: '/confirmBuy',
+      name: 'confirmBuy',
+      component: ConfirmBuy
+    },
+    {
+      path: '/payOrder',
+      name: 'payOrder',
+      component: PayOrder
     }
   ]
 })

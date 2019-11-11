@@ -102,7 +102,7 @@ router.get('/cartInfo', function (req, res, next) {
           connection.query('select * from sku where productId = ? and sku_id = ?', [rows[i].productId, rows[i].goods_sku_id],function (err, rows2, fields) {
             data[i].sku_name = rows2[0].sku_name
             data[i].special_price = rows2[0].special_price
-            data[i].productImg = rows2[0].sku_url
+            data[i].sku_url = rows2[0].sku_url
             if(rows.length - i === 1){
               return res.json({code:200, msg: 'success', data: data})
             }

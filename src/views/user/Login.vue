@@ -35,7 +35,7 @@
 <script>
   import NavBar from '@/components/common/navBar/NavBar'
   import utils from '@/common/utils'
-  import axios from 'axios'
+  import { Notify,Toast } from 'vant'
   export default {
     name: 'login',
     components: {
@@ -54,24 +54,15 @@
     methods: {
       login: utils.debounce(function() {
         if(!this.userName){
-          this.$message({
-            message: '账号不能为空',
-            type: 'warning'
-          })
+          Notify({ type: 'warning', message: '账号不能为空' })
           return false
         }
         if(!this.password) {
-          this.$message({
-            message: '密码不能为空',
-            type: 'warning'
-          })
+          Notify({ type: 'warning', message: '密码不能为空' })
           return false
         }
         if(!this.code) {
-          this.$message({
-            message: '验证码不能为空',
-            type: 'warning'
-          })
+          Notify({ type: 'warning', message: '验证码不能为空' })
           return false
         }
         let data = {
@@ -81,27 +72,18 @@
         }
         this.$store.dispatch('user/Login',data).then(res => {
           if(res.code === 200) {
-            this.$message({
-              message: '登陆成功',
-              type: 'success'
-            })
+            Toast.success('登陆成功')
             this.$store.state.user.userInfo = res.userInfo
             this.goBack()
           } else if(res.code === 0) {
-            this.$message({
-              message: '账号或密码错误',
-              type: 'error'
-            })
+            Notify({ type: 'danger', message: '账号或密码错误' })
           } else if(res.code === 101) {
-            this.$message({
-              message: '验证码错误',
-              type: 'error'
-            })
+            Notify({ type: 'danger', message: '验证码错误' })
           } else {
             console.log(res.msg)
           }
         }).catch(error => {
-          alert('网络发生错误')
+          Notify({ type: 'danger', message: '网络发生错误' })
           console.log(error)
         })
       }, 500),

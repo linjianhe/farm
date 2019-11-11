@@ -90,6 +90,7 @@ const actions = {
       }).then(res => {
         resolve(res)
       }).catch(err => {
+        console.log('网络出现问题')
         reject(err)
       })
     })
