@@ -7,10 +7,11 @@ const cors = require('cors')
 const session = require('express-session')
 
 //引入中间件
-const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
-const goodsRouter = require('./routes/goods');
+const indexRouter = require('./routes/index')
+const usersRouter = require('./routes/users')
+const goodsRouter = require('./routes/goods')
 const homeRouter = require('./routes/home')
+const orderRouter = require('./routes/order')
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/goods',goodsRouter);
 app.use('/home', homeRouter)
+app.use('/order', orderRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

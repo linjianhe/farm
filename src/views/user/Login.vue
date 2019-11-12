@@ -43,8 +43,8 @@
     },
     data() {
       return {
-        userName: '', //用户名
-        password: '', //密码
+        userName: 'linjianhe', //用户名
+        password: '123456', //密码
         switchValue: false, //明文密码开关值
         isShow: true, //是否显示明文密码
         code: '', //验证码

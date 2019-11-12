@@ -4,8 +4,9 @@
       <div slot="left" @click="goBack"><</div>
       <div slot="center">确认订单</div>
     </NavBar>
-    <div class="address" style="width: 100%;height: 100px;background-color: #ccc;text-align: center;line-height: 100px">
-      <span>地址</span>
+    <div class="address" style="width: 100%;height: 100px;background-color: #ccc;">
+      <div class="address-title">收货地址</div>
+      <span class="address-content">福建省漳平市溪南镇下林村下林44号</span>
     </div>
     <div class="goods">
       <div class="goods-item" v-for="(item, index) in goods">
@@ -14,7 +15,7 @@
           <div class="item-title">{{item.productName}}</div>
           <div class="item-sku">{{item.sku_name}}</div>
           <div class="info-bottom">
-            <div class="item-price">￥{{item.special_price | price}}</div>
+            <div class="item-price">￥{{item.special_price && item.special_price.toFixed(2)}}</div>
             <div class="item-num">x{{item.num}}</div>
           </div>
         </div>
@@ -45,10 +46,8 @@
         goods: []
       }
     },
-    filters: {
-      price(aa) {
-        return aa.toFixed(2)
-      }
+    mounted() {
+
     },
     created() {
       console.log(this.$route.params.goods)
@@ -59,6 +58,9 @@
         this.$router.go(-1)
       },
       subOrder: utils.debounce(function () {
+        this.$store.dispatch('order/AddOrder', {goods: this.goods,total: this.totalPrice}).then(res => {
+          console.log(res)
+        })
         this.$router.push({
           name: 'payOrder',
           params: {
@@ -72,7 +74,7 @@
       totalPrice() {
         return this.goods.reduce((preValue, item) => {
           return preValue += item.special_price * item.num
-        },0)
+        },0).toFixed(2)
       }
     }
   }
@@ -156,5 +158,13 @@
     color: #fff;
     background-color: green;
     border-radius: 20px;
+  }
+  .address-title{
+    padding: 20px;
+    font-size: 22px;
+    color: #FE6B28;
+  }
+  .address-content{
+    padding: 20px;
   }
 </style>

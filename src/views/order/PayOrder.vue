@@ -74,7 +74,7 @@
       totalPrice() {
         return this.goods.reduce((preValue, item) => {
           return preValue += item.special_price * item.num
-        },0)
+        },0).toFixed(2)
       }
     }
   }

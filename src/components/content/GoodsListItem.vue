@@ -76,13 +76,15 @@
     width: 20px;
     height: 20px;
     align-self: center;
+    margin-right: 5px;
   }
   .goodsListItem div img{
-    width: 130px;
-    height: 150px;
+    width: 110px;
+    height: 110px;
+    margin-right: 10px;
   }
   .item-info{
-    margin: 20px 0;
+    margin: 10px 0;
     flex: 1;
   }
   .item-title{
@@ -93,9 +95,12 @@
     font-size: 18px;
     margin-bottom: 10px;
   }
+  .item-sku{
+    font-size: 13px;
+  }
   .info-bottom{
     display: flex;
-    margin-top: 45px;
+    margin-top: 25px;
   }
   .item-price{
     color: red;

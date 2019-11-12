@@ -13,7 +13,7 @@
   import GoodsList from '@/components/content/GoodsList'
   import CartBottomBar from '@/components/content/CartBottomBar'
   import eventBus from '../../common/eventBus'
-  import { Dialog } from 'vant'
+  import { Dialog,Notify } from 'vant'
   export default {
     name: 'cart',
     components: {
@@ -60,12 +60,16 @@
         let goodsList = this.goodsList.filter(item => {
           return item.checked
         })
-        this.$router.push({
-          name  : 'confirmBuy',
-          params: {
-            goods: goodsList
-          }
-        })
+        if(goodsList.length) {
+          this.$router.push({
+            name  : 'confirmBuy',
+            params: {
+              goods: goodsList
+            }
+          })
+        } else {
+          Notify({type: 'warning', message: '请先选择商品'})
+        }
       }
     },
     created() {

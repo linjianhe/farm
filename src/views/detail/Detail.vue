@@ -14,8 +14,9 @@
         </div>
         <div class="price">
           <span class="price-tag">价格：</span>
-          <span class="price-sp">￥{{chooseSku.special_price | price}}</span>
-          <span class="price-sale" v-if="chooseSku.special_price !== chooseSku.sale_price">￥{{chooseSku.sale_price | price}}</span>
+          <span class="price-sp">￥{{chooseSku.special_price && chooseSku.special_price.toFixed(2)}}</span>
+          <span class="price-sale" v-if="chooseSku.special_price !== chooseSku.sale_price">￥{{chooseSku.sale_price && chooseSku.sale_price.toFixed(2)}}</span>
+          <div class="stock">库存：{{chooseSku.stock}}</div>
         </div>
         <div class="sku">
           <div class="sku-item" :class="{check:currentIndex === index}" v-for="(item, index) in goodsSku" @click="changeType(index)">
@@ -60,11 +61,11 @@
         isLoading: false
       }
     },
-    filters: {
-      price(aa) {
-        return aa.toFixed(2)
-      }
-    },
+    // filters: {
+    //   price(aa) {
+    //     return aa.toFixed(2)
+    //   }
+    // },
     methods: {
       onRefresh() {
         setTimeout(() => {
@@ -131,18 +132,26 @@
           if (this.chooseSku.stock === 0) {
             Notify({type: 'warning', message: '已无货源！'})
           } else {
-            let goodsList = [{
-              sku_url: this.chooseSku.sku_url,
-              productName: this.goods.productName,
-              special_price: this.chooseSku.special_price,
-              goodsId: this.id,
-              sku_name: this.chooseSku.sku_name,
-              num: this.number
-            }]
-            this.$router.push({
-              name  : 'confirmBuy',
-              params: {
-                goods: goodsList
+            this.$store.dispatch('user/IsLogin').then(res => {
+              if(res.code === 200) {
+                let goodsList = [{
+                  sku_url: this.chooseSku.sku_url,
+                  productName: this.goods.productName,
+                  special_price: this.chooseSku.special_price,
+                  productId: this.id,
+                  goods_sku_id: this.chooseSku.sku_id,
+                  sale_price: this.chooseSku.sale_price,
+                  sku_name: this.chooseSku.sku_name,
+                  num: this.number
+                }]
+                this.$router.push({
+                  name  : 'confirmBuy',
+                  params: {
+                    goods: goodsList
+                  }
+                })
+              } else{
+                Notify({type:'warning', message: res.msg})
               }
             })
           }
@@ -210,6 +219,10 @@
   }
   .price-sale{
     text-decoration: line-through;
+  }
+  .stock{
+    font-size: 17px;
+    margin: 15px 0 0 0;
   }
   .sku{
     display: flex;

@@ -37,13 +37,33 @@ router.get('/detail',function (req, res, next) {
 router.get('/addCart', function (req, res, next) {
   console.log(req.query)
   if(req.session.userId) {
-    let values = {productId: req.query.goodsId, goods_sku_id: req.query.goodsSkuId, member_id: req.session.userId, goods_num: req.query.goodsNum}
-    connection.query('INSERT INTO `cart` SET ?', [values],function (err, rows, fields) {
-      if(err){
-        console.log('INSERT ERROR - ', err.message)
-        return;
+    //查询自己购物车里是否有该商品
+    connection.query('SELECT * from cart where productId = ? and goods_sku_id = ? and member_id= ?', [req.query.goodsId, req.query.goodsSkuId,req.session.userId],function (err, rows, fields) {
+      if (err) {
+        return res.json({code:201, msg: '获取失败'})
       } else {
-        return res.json({code:200, msg: '加入购物车成功'})
+        if(rows.length) {
+          let num = Number(rows[0].goods_num) + Number(req.query.goodsNum)
+          let sql = 'UPDATE cart SET goods_num = ? WHERE member_id = ? and goods_sku_id = ? and productId = ?'
+          connection.query(sql, [num, req.session.userId, req.query.goodsSkuId, req.query.goodsId],function (err, rows, fields) {
+            if(err){
+              console.log('INSERT ERROR - ', err.message)
+              return;
+            } else {
+              return res.json({code:200, msg: '加入购物车成功'})
+            }
+          })
+        } else {
+          let values = {productId: req.query.goodsId, goods_sku_id: req.query.goodsSkuId, member_id: req.session.userId, goods_num: req.query.goodsNum}
+          connection.query('INSERT INTO `cart` SET ?', [values],function (err, rows, fields) {
+            if(err){
+              console.log('INSERT ERROR - ', err.message)
+              return;
+            } else {
+              return res.json({code:200, msg: '加入购物车成功'})
+            }
+          })
+        }
       }
     })
   } else {
@@ -102,6 +122,7 @@ router.get('/cartInfo', function (req, res, next) {
           connection.query('select * from sku where productId = ? and sku_id = ?', [rows[i].productId, rows[i].goods_sku_id],function (err, rows2, fields) {
             data[i].sku_name = rows2[0].sku_name
             data[i].special_price = rows2[0].special_price
+            data[i].sale_price = rows2[0].sale_price
             data[i].sku_url = rows2[0].sku_url
             if(rows.length - i === 1){
               return res.json({code:200, msg: 'success', data: data})

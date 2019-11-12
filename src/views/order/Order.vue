@@ -9,6 +9,27 @@
         <span>{{item}}</span>
       </div>
     </div>
+    <div class="orders">
+      <div class="order-item" v-for="(item, index) in orderList1">
+        <div class="order-id">
+          <span >订单编号:{{item.order.order_id}}</span><span class="state">{{item.order.order_status | state}}</span>
+        </div>
+        <div class="item-info" v-for="(item1, index1) in item.goods">
+          <div class="item-img" @click="goGoodsDetail(item1)">
+            <img :src="item1.productImg" alt=""/>
+          </div>
+          <div class="item-desc">
+            <div class="item-title">{{item1.productName}}</div>
+            <div class="item-sku">{{item1.goods_sku_name}}</div>
+            <div class="info-bottom">
+              <div class="item-price">￥{{item1.discount_price}}</div>
+              <div class="item-num">x{{item1.goods_num}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="item-money">应付金额：<span>￥{{item.order.order_price}}</span></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -22,16 +43,51 @@
     data() {
       return {
         type: ['全部','待付款','待发货','待收货','待评论'],
-        currentIndex: 0
+        currentIndex: 0,
+        orderList: [],
+        orderList1: []
+      }
+    },
+    filters: {
+      state(data) {
+        switch (data) {
+          case 1: return '待付款';
+          case 2: return '待发货';
+          case 3: return '待收货';
+          case 4: return '待评价';
+          case 5: return '已完成';
+          case 6: return '已取消';
+        }
       }
     },
     methods: {
       changeType(index) {
         this.currentIndex = index
+        console.log(index)
+        if(index > 0){
+          this.orderList1 = this.orderList.filter(item => {
+            return Number(item.order.order_status) === index
+          })
+        } else {
+          this.orderList1 = this.orderList
+        }
       },
       goBack() {
         this.$router.go(-1)
+      },
+      goGoodsDetail(item){
+        console.log(item.productId)
+        this.$router.push('/detail/' + item.productId)
       }
+    },
+    created() {
+      console.log('lll')
+      this.$store.dispatch('order/GetOrder').then(res => {
+        if(res.code === 200) {
+          this.orderList = res.data
+          this.orderList1 = res.data
+        }
+      })
     }
   }
 </script>
@@ -40,7 +96,7 @@
   .order{
     position: relative;
     z-index: 999;
-    background-color: #fff;
+    background-color: #ddd;
     height: calc(100vh - 44px);
   }
   .order-nav{
@@ -48,10 +104,15 @@
     color: #fff;
   }
   .order-type{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     margin: 44px 0 0 0;
     display: flex;
     height: 44px;
     line-height: 44px;
+    background-color: #fff;
     border-bottom: 1px solid #ddd;
   }
   .order-type-item{
@@ -63,5 +124,82 @@
   }
   .active span{
     border-bottom: 2px solid #FE6B28;
+  }
+  .orders{
+    margin-top: 88px;
+    height: calc(100vh - 88px);
+    overflow: scroll;
+  }
+  .order-item{
+    margin: 10px;
+    border-radius: 10px;
+    background-color: #fff;
+  }
+  .order-id{
+    height: 50px;
+    line-height: 50px;
+    padding-left: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  .state{
+    margin-left: 50px;
+    color: orange;
+  }
+  .item-info{
+    display: flex;
+    margin:5px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 15px;
+  }
+  .item-info img{
+    width: 20px;
+    height: 20px;
+    align-self: center;
+    margin-right: 5px;
+    margin-left: 5px;
+  }
+  .item-info div img{
+    width: 110px;
+    height: 90px;
+    margin-right: 30px;
+  }
+  .item-desc{
+    display: flex;
+    flex-direction: column;
+  }
+  .item-title{
+    width: 150px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .item-sku{
+    font-size: 13px;
+  }
+  .info-bottom{
+    display: flex;
+    margin-top: 25px;
+  }
+  .item-price{
+    color: red;
+    font-size: 18px;
+    margin-right: auto;
+  }
+  .item-num{
+    width: 25px;
+    text-align: center;
+  }
+  .item-money{
+    height: 50px;
+    line-height: 50px;
+    border-top: 1px solid #ddd;
+    padding-left: 20px;
+  }
+  .item-money > span{
+    color: red;
   }
 </style>
