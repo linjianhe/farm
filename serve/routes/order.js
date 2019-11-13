@@ -66,4 +66,28 @@ router.post('/getOrder', function (req, res) {
   }
 })
 
+router.post('/changeState', function (req, res) {
+  console.log(req.body.state)
+  let state = req.body.state
+  if(req.session.userId) {
+    if(state === 1) {
+      //准备付款
+
+    }
+    if(state === 2) {
+      //催发货
+    }
+    if(state === 3) {
+      //准备收货
+
+    }
+    if(state === 4) {
+      //准备评价
+
+    }
+  } else {
+    return res.json({code:201, msg: '请先登录'})
+  }
+})
+
 module.exports = router

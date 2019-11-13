@@ -41,6 +41,19 @@ const actions = {
         reject(err)
       })
     })
+  },
+  ChangeState({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/order/changeState',
+        method: 'post',
+        data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 }
 

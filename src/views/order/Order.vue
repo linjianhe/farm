@@ -12,7 +12,12 @@
     <div class="orders">
       <div class="order-item" v-for="(item, index) in orderList1">
         <div class="order-id">
-          <span >订单编号:{{item.order.order_id}}</span><span class="state">{{item.order.order_status | state}}</span>
+          <div>
+            <span class="order-item-id">订单编号:{{item.order.order_id}}</span>
+          </div>
+          <div>
+            <span class="state">{{item.order.order_status | state}}</span>
+          </div>
         </div>
         <div class="item-info" v-for="(item1, index1) in item.goods">
           <div class="item-img" @click="goGoodsDetail(item1)">
@@ -27,7 +32,14 @@
             </div>
           </div>
         </div>
-        <div class="item-money">应付金额：<span>￥{{item.order.order_price}}</span></div>
+        <div class="item-money">
+          <div>
+            应付金额：<span class="order-money">￥{{item.order.order_price}}</span>
+          </div>
+          <div v-if="item.order.order_status < 5" @click="changeState(item.order.order_status)">
+            <span class="action">{{item.order.order_status | action}}</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -58,12 +70,19 @@
           case 5: return '已完成';
           case 6: return '已取消';
         }
+      },
+      action(data) {
+        switch (data) {
+          case 1: return '去付款';
+          case 2: return '催一下';
+          case 3: return '去收货';
+          case 4: return '去评价';
+        }
       }
     },
     methods: {
       changeType(index) {
         this.currentIndex = index
-        console.log(index)
         if(index > 0){
           this.orderList1 = this.orderList.filter(item => {
             return Number(item.order.order_status) === index
@@ -78,6 +97,12 @@
       goGoodsDetail(item){
         console.log(item.productId)
         this.$router.push('/detail/' + item.productId)
+      },
+      changeState(state) {
+        console.log(state)
+        this.$store.dispatch('order/ChangeState', {state: state}).then(res => {
+          console.log(res)
+        })
       }
     },
     created() {
@@ -97,7 +122,7 @@
     position: relative;
     z-index: 999;
     background-color: #ddd;
-    height: calc(100vh - 44px);
+    height: calc(100vh - 88px);
   }
   .order-nav{
     background-color: #ff8198;
@@ -140,10 +165,16 @@
     line-height: 50px;
     padding-left: 20px;
     border-bottom: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+  }
+  .order-item-id{
+    flex: 1;
   }
   .state{
-    margin-left: 50px;
     color: orange;
+    flex: 1;
+    margin-right: 20px;
   }
   .item-info{
     display: flex;
@@ -198,8 +229,18 @@
     line-height: 50px;
     border-top: 1px solid #ddd;
     padding-left: 20px;
+    display: flex;
+    justify-content: space-between;
   }
-  .item-money > span{
+  .order-money{
     color: red;
+    flex: 1;
+  }
+  .action{
+    border: 1px solid #ddd;
+    color: red;
+    flex: 1;
+    margin-right: 15px;
+    padding: 5px;
   }
 </style>

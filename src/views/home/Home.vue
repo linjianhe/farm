@@ -23,6 +23,7 @@
   import Goods from '@/components/content/Goods'
   import { Toast } from 'vant'
   import { Notify } from 'vant'
+  Toast.setDefaultOptions({ duration: 1000 }) //全局设置toast时间为1s
 
   export default {
     name: 'home',
