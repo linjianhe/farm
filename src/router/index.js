@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+// 路由按需加载
 const Home = () => import('../views/home/Home')
 const Cart = () => import('../views/cart/Cart')
 const Profile = () => import('../views/profile/Profile')
@@ -16,7 +17,7 @@ const PayOrder = () => import('../views/order/PayOrder')
 
 Vue.use(Router)
 
-export default new Router({
+const router =  new Router({
   mode: 'history',
   base: process.env.BASE_URL,
   routes: [
@@ -76,3 +77,10 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  console.log('我是路由卫士', to.path)
+  next()
+})
+
+export default router

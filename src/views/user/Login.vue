@@ -117,6 +117,10 @@
     },
     created () {
       this.getCaptcha()
+      console.log(this.$el)
+    },
+    mounted() {
+      console.log(this.$el)
     }
   }
 </script>
