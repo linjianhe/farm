@@ -79,7 +79,6 @@ const router =  new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log('我是路由卫士', to.path)
   next()
 })
 

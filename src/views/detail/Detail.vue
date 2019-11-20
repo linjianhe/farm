@@ -31,6 +31,7 @@
             <button class="numUp"  :disabled="number >= chooseSku.stock"  @click="add">+</button>
           </div>
         </div>
+        <div id="myChart" :style="{width: '300px', height: '300px'}"></div>
       </div>
     </van-pull-refresh>
     <div class="bottom-warp">
@@ -158,7 +159,37 @@
         } else {
           Notify({type: 'warning', message: '请选择规格！'})
         }
-      }, 2500)
+      }, 2500),
+      drawLine() {
+        let myChart = this.$echarts.init(document.getElementById('myChart'))
+        // 绘制图表
+        myChart.setOption({
+          dataset: {
+            source: [
+              [12, 323, 11.2],
+              [23, 167, 8.3],
+              [81, 284, 12],
+              [91, 413, 4.1],
+              [13, 287, 13.5]
+            ]
+          },
+          visualMap: {
+            show: false,
+            dimension: 2, // 指向第三列（列序号从 0 开始记，所以设置为 2）。
+            min: 2, // 需要给出数值范围，最小数值。
+            max: 15, // 需要给出数值范围，最大数值。
+            inRange: {
+              // 气泡尺寸：5 像素到 60 像素。
+              symbolSize: [5, 15]
+            }
+          },
+          xAxis: {},
+          yAxis: {},
+          series: {
+            type: 'scatter'
+          }
+        })
+      }
     },
     computed: {
       total () {
@@ -176,6 +207,9 @@
           Toast.success('加载成功')
         }
       })
+    },
+    mounted() {
+      this.drawLine()
     }
   }
 </script>

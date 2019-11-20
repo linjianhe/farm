@@ -1,18 +1,24 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div class="login">
     <NavBar bgc="#fff" >
-      <div slot="left" class="login-nav" @click="goBack"><</div>
-      <div slot="center" class="login-nav">登录</div>
+      <template v-slot:left>
+        <div class="login-nav" @click="goBack"><</div>
+      </template>
+      <template v-slot:center>
+        <div class="login-nav">登录</div>
+      </template>
     </NavBar>
     <div class="login-content">
       <h1>来5斤商城</h1>
       <div class="login-form">
         <div class="login-wrap">
-          <img class="login-img" src="../../assets/img/user.svg"/>
-          <input type="text" class="login-input" v-model="userName" placeholder="请输入用户名" @input="userNameCheck($event)"/>
+          <img class="login-img" src="../../assets/img/user.svg" alt=""/>
+          <label>
+            <input type="text" class="login-input" v-model="userName" placeholder="请输入用户名" @input="userNameCheck($event)"/>
+          </label>
         </div>
         <div class="login-wrap">
-          <img class="login-img" src="../../assets/img/pass.svg"/>
+          <img class="login-img" src="../../assets/img/pass.svg" alt=""/>
           <input v-if="isShow" type="password" class="login-input" v-model="password" placeholder="请输入密码" @keyup.enter="login" @input="passCheck($event)"/>
           <input v-else type="text" class="login-input" v-model="password" placeholder="请输入密码" @keyup.enter="login" @input="passCheck($event)"/>
           <el-switch v-model="switchValue" active-color="#13ce66" inactive-color="#ddd" @change="changeShow"></el-switch>
@@ -35,6 +41,8 @@
 <script>
   import NavBar from '@/components/common/navBar/NavBar'
   import utils from '@/common/utils'
+  import cookie from 'vue-cookie'
+  import { mapActions } from 'vuex'
   import { Notify,Toast } from 'vant'
   export default {
     name: 'login',
@@ -52,6 +60,7 @@
       }
     },
     methods: {
+      ...mapActions('user', ['Login']),
       login: utils.debounce(function() {
         if(!this.userName){
           Notify({ type: 'warning', message: '账号不能为空' })
@@ -70,10 +79,11 @@
           password: this.password,
           code: this.code
         }
-        this.$store.dispatch('user/Login',data).then(res => {
+        this.Login(data).then(res => {
           if(res.code === 200) {
             Toast.success('登陆成功')
             this.$store.state.user.userInfo = res.userInfo
+            cookie.set('token', res.token)
             this.goBack()
           } else if(res.code === 0) {
             Notify({ type: 'danger', message: '账号或密码错误' })
@@ -120,7 +130,7 @@
       console.log(this.$el)
     },
     mounted() {
-      console.log(this.$el)
+      console.log(this.$el, this.$attrs)
     }
   }
 </script>

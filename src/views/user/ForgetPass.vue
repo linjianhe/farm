@@ -1,8 +1,12 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div class="forgetPass">
     <NavBar bgc="#fff" >
-      <div slot="left" class="forgetPass-nav" @click="goBack"><</div>
-      <div slot="center" class="forgetPass-nav">找回密码</div>
+      <template v-slot:left>
+        <div class="forgetPass-nav" @click="goBack"><</div>
+      </template>
+      <template v-slot:center>
+        <div class="forgetPass-nav">找回密码</div>
+      </template>
     </NavBar>
     <div class="forgetPass-form">
       <h2>忘记密码了(╥╯^╰╥)</h2>

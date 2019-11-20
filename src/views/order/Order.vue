@@ -36,7 +36,7 @@
           <div>
             应付金额：<span class="order-money">￥{{item.order.order_price}}</span>
           </div>
-          <div v-if="item.order.order_status < 5" @click="changeState(item.order.order_status)">
+          <div v-if="item.order.order_status < 5" @click="changeState(item.order)">
             <span class="action">{{item.order.order_status | action}}</span>
           </div>
         </div>
@@ -47,6 +47,8 @@
 
 <script>
   import NavBar from '@/components/common/navBar/NavBar'
+  import { Toast, Dialog } from 'vant'
+
   export default {
     name: 'order',
     components: {
@@ -98,21 +100,56 @@
         console.log(item.productId)
         this.$router.push('/detail/' + item.productId)
       },
-      changeState(state) {
-        console.log(state)
-        this.$store.dispatch('order/ChangeState', {state: state}).then(res => {
-          console.log(res)
+      changeState(order) {
+        let status = order.order_status
+        let money = order.order_price
+        let order_id = order.order_id
+        if (status === 2) {
+          Toast('商家已经收到您的催货')
+        } else if (status === 1) {
+          Dialog.confirm({
+            title: '提示',
+            message: '确定付款么'
+          }).then(() => {
+            Toast.loading({
+              duration: 0,
+              message: '支付中...',
+              forbidClick: true
+            });
+            this.$store.dispatch('order/ChangeState', {state: status,money: money, order_id: order_id}).then(res => {
+              if (res.code === 200) {
+                setTimeout(function (){Toast.success('支付成功')},800)
+                order.order_status = 2
+                this.changeType(1)
+              }
+            })
+          }).catch(() => {
+            // on cancel
+            Toast.clear()
+          })
+        } else if (status === 3) {
+          this.$store.dispatch('order/ChangeState', {state: status,money: money, order_id: order_id}).then(res => {
+            if (res.code === 200) {
+              Toast.success('收货成功')
+              order.order_status = 4
+              this.changeType(3)
+            }
+          })
+        }
+      },
+      initOrder() {
+        this.orderList = []
+        this.orderList1 = []
+        this.$store.dispatch('order/GetOrder').then(res => {
+          if(res.code === 200) {
+            this.orderList = res.data
+            this.orderList1 = res.data
+          }
         })
       }
     },
     created() {
-      console.log('lll')
-      this.$store.dispatch('order/GetOrder').then(res => {
-        if(res.code === 200) {
-          this.orderList = res.data
-          this.orderList1 = res.data
-        }
-      })
+      this.initOrder()
     }
   }
 </script>
