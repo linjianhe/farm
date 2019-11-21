@@ -1,4 +1,5 @@
 const utils = {
+  // 防抖函数
   debounce(fn, delay) {
   var timer = null
   return function () {
@@ -9,6 +10,7 @@ const utils = {
       }, delay)
     }
   },
+  // 节流函数
   throttle(func, wait = 2000, type = 1) {
     let previous = 0;
     let timeout;

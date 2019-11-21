@@ -1,6 +1,6 @@
 <template>
   <div id="detailNavBar">
-    <nav-bar>
+    <nav-bar style="background-color:#fff;">
       <div slot="left" class="back" @click="back"><</div>
       <div slot="center" class="nav">
         <div class="nav-title" v-for="(item,index) in title" @click="itemClick(index)" :class="{active: currentIndex === index}">{{item}}</div>

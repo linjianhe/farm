@@ -16,54 +16,7 @@ const mutations = {
 }
 
 const actions = {
-  GetCars({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: '/api/car/',
-        params: {
-          type: 'brand',
-          from: 0,
-          pagesize: 300
-        },
-        method: 'get'
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  GetCarsCopy({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: '/api/car/',
-        params: {
-          type: 'brand',
-          from: 0,
-          pagesize: 10*data
-        },
-        method: 'get'
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  GetGoods({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: '/farm/goods',
-        method: 'get',
-        data: data
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  GetBanner({ commit }, data) {
+  GetGoodsBanner({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
         url: '/farm/home/banner',
@@ -72,6 +25,72 @@ const actions = {
       }).then(res => {
         resolve(res)
       }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  AddCart({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/goods/addCart',
+        method: 'get',
+        params: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  BuyNow({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/goods/buyNow',
+        method: 'get',
+        params: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  CartInfo({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/goods/cartInfo',
+        method: 'get',
+        params: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  Detail({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/goods/detail',
+        method: 'get',
+        params: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  UpdateCart({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/goods/updateCart',
+        method: 'get',
+        params: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        console.log('网络出现问题')
         reject(err)
       })
     })

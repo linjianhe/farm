@@ -16,45 +16,11 @@ const mutations = {
 }
 
 const actions = {
-  GetCars({ commit }, data) {
+  AddOrder({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: '/api/car/',
-        params: {
-          type: 'brand',
-          from: 0,
-          pagesize: 300
-        },
-        method: 'get'
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  GetCarsCopy({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: '/api/car/',
-        params: {
-          type: 'brand',
-          from: 0,
-          pagesize: 10*data
-        },
-        method: 'get'
-      }).then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
-  },
-  GetGoods({ commit }, data) {
-    return new Promise((resolve, reject) => {
-      interceptor({
-        url: '/farm/goods',
-        method: 'get',
+        url: '/farm/order/addOrder',
+        method: 'post',
         data: data
       }).then(res => {
         resolve(res)
@@ -63,11 +29,24 @@ const actions = {
       })
     })
   },
-  GetBanner({ commit }, data) {
+  GetOrder({ commit }, data) {
     return new Promise((resolve, reject) => {
       interceptor({
-        url: '/farm/home/banner',
-        method: 'get',
+        url: '/farm/order/getOrder',
+        method: 'post',
+        data: data
+      }).then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  },
+  ChangeState({ commit }, data) {
+    return new Promise((resolve, reject) => {
+      interceptor({
+        url: '/farm/order/changeState',
+        method: 'post',
         data: data
       }).then(res => {
         resolve(res)

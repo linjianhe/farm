@@ -19,10 +19,10 @@
     },
     methods: {
       itemDetail() {
-        // this.$router.push('/detail/' + this.goodsItem.id)//商品详情
-        this.$router.push({
-          path: `/brandsDetail/${this.goodsItem.id}/${this.goodsItem.name}`
-        }) // 品牌详情
+        this.$router.push('/detail/' + this.goodsItem.productId)//商品详情
+        // this.$router.push({
+        //   path: `/brandsDetail/${this.goodsItem.id}/${this.goodsItem.name}`
+        // }) // 品牌详情
       }
     }
   }
@@ -33,7 +33,7 @@
     width: 48%;
     text-align: center;
     background-color: #fff;
-    margin: 5px 0;
+    margin: 5px 3px;
     border-radius: 10px;
   }
   .goods-item img{

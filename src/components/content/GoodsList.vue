@@ -1,6 +1,6 @@
 <template>
   <div class="goodsList">
-    <GoodsListItem v-for="item in goodsList" :goods="item"></GoodsListItem>
+    <GoodsListItem v-for="item in goodsList" :goodsItem="item"></GoodsListItem>
   </div>
 </template>
 
@@ -18,6 +18,8 @@
     },
     components: {
       GoodsListItem
+    },
+    created() {
     }
   }
 </script>

@@ -3,7 +3,7 @@
     <img :src="imgUrl" @click="checkAll"/>
     <div>全选</div>
     <div class="totalPrice">合计:￥{{totalPrice | total}}</div>
-    <div class="goPay">去结算</div>
+    <div class="goPay" @click="goConfirmBuy">去结算</div>
   </div>
 </template>
 
@@ -45,6 +45,9 @@
     methods: {
       checkAll() {
         this.$emit('checkAll')
+      },
+      goConfirmBuy() {
+        this.$emit('goConfirmBuy')
       }
     }
   }

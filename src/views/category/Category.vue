@@ -8,7 +8,7 @@
         <div v-for="(item,index) in category" class="category-item" :class="{check: currentIndex=== index}" @click="choose(index)">{{item}}</div>
       </div>
       <div class="category-right">
-        <goods :goods="goods"/>
+        <goods :goods="goods"></goods>
       </div>
     </div>
   </div>
@@ -35,14 +35,14 @@
         this.currentIndex = index
         if(index >= 1){
           this.$store.dispatch('home/GetCarsCopy',index).then(res => {
-            this.goods = res.data.info
+            this.goods = res.info
           })
         }
       }
     },
     created() {
       this.$store.dispatch('home/GetCars').then(res => {
-        this.goods = res.data.info
+        this.goods = res.info
       })
     },
   }
@@ -68,11 +68,11 @@
     background-color: #eee;
   }
   .category-left{
-    width: 25%;
+    width: 18%;
     overflow: auto;
   }
   .category-right{
-    width: 75%;
+    width: 82%;
     overflow: auto;
   }
   .check{

@@ -2,25 +2,27 @@
   <div class="goodsListItem">
     <img :src="imgUrl" @click="imgClick"/>
     <div class="item-img">
-      <img :src="goods.img" alt=""/>
+      <img :src="goodsItem.sku_url" alt=""/>
     </div>
     <div class="item-info">
-      <div class="item-title">{{goods.name}}</div>
+      <div class="item-title">{{goodsItem.productName}}</div>
+      <div class="item-sku">{{goodsItem.sku_name}}</div>
       <div class="info-bottom">
-        <div class="item-price">￥{{goods.price | price}}</div>
-        <input type="button" value="-" class="num-down" :disabled="goods.num<1" @click="numDown"/>
-        <div class="item-num">{{goods.num}}</div>
-        <input type="button" value="+" class="num-up" :disabled="goods.num>=5" @click="numUp"/>
+        <div class="item-price">￥{{goodsItem.special_price | price}}</div>
+        <input type="button" value="-" class="num-down" :disabled="goodsItem.num<1" @click="numDown"/>
+        <div class="item-num">{{goodsItem.num}}</div>
+        <input type="button" value="+" class="num-up"  @click="numUp"/>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import eventBus from '../../common/eventBus'
   export default {
     name: 'GoodsListItem',
     props: {
-      goods: {
+      goodsItem: {
         type: Object,
         default() {
           return {}
@@ -29,12 +31,12 @@
     },
     data() {
       return {
-        check: false
+        i: 0
       }
     },
     computed: {
       imgUrl() {
-        if(!this.goods.check) {
+        if(!this.goodsItem.checked) {
           return require('../../assets/img/choose.svg')
         } else{
           return require('../../assets/img/choosed.svg')
@@ -42,21 +44,23 @@
       }
     },
     filters: {
-      price(price) {
-        return price.toFixed(2)
+      price(special_price) {
+        return special_price.toFixed(2)
       }
     },
     methods: {
       imgClick() {
-        this.goods.check = !this.goods.check
+        this.goodsItem.checked = !this.goodsItem.checked
       },
       numDown() {
-        this.goods.num --
+        eventBus.$emit('numChange', this.goodsItem, -1)
       },
       numUp() {
-        this.goods.num ++
+        eventBus.$emit('numChange', this.goodsItem, 1)
       }
-    }
+    },
+    created() {
+    },
   }
 </script>
 
@@ -72,13 +76,15 @@
     width: 20px;
     height: 20px;
     align-self: center;
+    margin-right: 5px;
   }
   .goodsListItem div img{
-    width: 130px;
-    height: 150px;
+    width: 110px;
+    height: 110px;
+    margin-right: 10px;
   }
   .item-info{
-    margin: 20px 0;
+    margin: 10px 0;
     flex: 1;
   }
   .item-title{
@@ -86,10 +92,15 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  .item-sku{
+    font-size: 13px;
   }
   .info-bottom{
     display: flex;
-    margin-top: 60px;
+    margin-top: 25px;
   }
   .item-price{
     color: red;

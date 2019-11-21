@@ -2,7 +2,7 @@
   <div class="profile">
     <div class="profile-img">
       <img src="@/assets/img/testImg/yaotou.jpg" alt=""/>
-      <span>林剑河</span>
+      <span>{{$store.state.user.userInfo.userName || '未登录，请先登录'}}</span>
     </div>
     <div class="profile-menu">
       <div class="profile-menu-item" @click="goOrder">
@@ -25,12 +25,17 @@
         <span>我的消息</span>
         <p>></p>
       </div>
+      <div v-if="Object.keys($store.state.user.userInfo).length !== 0" @click="logout">
+        <img src="@/assets/img/message.svg"/>
+        <span>注销</span>
+        <p>></p>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import axios from 'axios'
+  import { Notify,Toast,Dialog } from 'vant'
 export default {
   name: 'profile',
   data() {
@@ -43,12 +48,42 @@ export default {
       this.$router.push({
         path: '/order'
       })
+    },
+    login() {
+      this.$router.push({
+        path: '/login'
+      })
+    },
+    logout() {
+      this.$store.dispatch('user/Logout').then(res => {
+        if(res.code === 200) {
+          Toast.success('登出成功');
+          this.$router.push('/login')
+        }
+      })
     }
   },
   created() {
     // this.$store.dispatch('home/Test').then(res => {
     //   console.log(res)
     // })
+    this.$store.dispatch('user/IsLogin').then(res => {
+      if(res.code === 200) {
+        this.$store.state.user.userInfo = res.userInfo
+      } else {
+        this.$store.commit('user/CLEAR_USER')
+        Dialog.confirm({
+          title: '提示',
+          message: '您还未登录，是否去登录?'
+        }).then(() => {
+          this.$router.push('/login')
+        }).catch(() => {
+          // on cancel
+        })
+      }
+    })
+  },
+  computed: {
   }
 }
 </script>

@@ -12,6 +12,10 @@
     props:{
       bgc: String,
       fontColor: String
+    },
+    data() {
+      return {
+      }
     }
   }
 </script>
